@@ -45,6 +45,8 @@ class Controller extends BaseController
         return view('create_client');
     }
 
+
+
     // public function showCreneaux(){
     //     $vetos = $this->repository->veterinaires();
     //     $creneaux = $this->repository->creneaux();
@@ -253,7 +255,11 @@ class Controller extends BaseController
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors("Impossible d'ajouter l'animal");
             }
-        Storage::disk('local')->put("animals/$IDAnimal",$request->photoAnimal);
+        if($request->photoAnimal != NULL)
+            Storage::disk('local')->put("animals/$IDAnimal",$request->photoAnimal);
+        else
+        Storage::copy('animals/image.jpg', "animals/$IDAnimal/image.jpg");
+
         return redirect()->route('welcome.show');
     }
     

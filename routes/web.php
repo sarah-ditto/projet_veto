@@ -29,7 +29,7 @@ use App\Http\Controllers\profileProController;
     Route::post('/create_slots',[Controller::class, 'storeSlots'])->name('createSlots.post');
     Route::get('/create_animal', [Controller::class, 'createAnimal'])->name('createAnimal.show');
     Route::post('/create_animal', [Controller::class, 'storeAnimal'])->name('createAnimal.post');
-
+    Route::get('/animals', [Controller::class, 'showAnimals'])->name('Animals.store');
     
     //vue profil veto (zied)
     Route::get('/vet_profile',[profileProController::class, 'showVetProfile']) ->name('vetProfile.post');
