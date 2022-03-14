@@ -52,8 +52,10 @@ class Repository{
     }
 
     function veterinaire ($IDveto){
-        return  
-        DB::table('Veterinaires')->where('IDVeto',$IDveto)-> get()->toArray()[0];
+        $veto = DB::table('Veterinaires')->where('IDVeto',$IDveto)-> get()->toArray()[0];
+        if (count($veto)==0)
+            throw new Exception('Vétérinaire inconnu');
+        return $veto;
     }
 
     function veterinaires(){
@@ -67,6 +69,14 @@ class Repository{
         return  
         DB::table('Creneaux')->get()->toArray();
     
+    }
+
+    function creneau(int $IDCreneau){
+        $creneau = DB::table('Creneaux')->where('IDCreneau',$IDCreneau)
+        ->join('Veterinaires', 'Creneaux.IDVeto', '=', 'Veterinaires.IDVeto')->get()->toArray();
+        if (count($creneau)==0)
+            throw new Exception('Creneau inconnu');
+        return $creneau[0];
     }
     
     
@@ -137,8 +147,7 @@ class Repository{
                         'PathologiesAnimal' => $Animaux ['PathologiesAnimal'], 
                         'IDClient' => $Animaux ['IDClient'], 
                         'TypeAnimal' => $Animaux ['TypeAnimal'],
-        ])
-       ;
+        ]);
    }
 
 
@@ -153,8 +162,7 @@ class Repository{
         : DB::table('Creneaux')
         ->insertGetId(['DateCreneau' => $Creneaux ['DateCreneau'], 
                     'IDVeto'=> $Creneaux ['IDVeto'], 
-        ])
-        ;
+        ]);
    }
 
    function insertConsultation(array $Consultations) :int{
@@ -304,9 +312,8 @@ class Repository{
                 if (Carbon::parse($date)->gt($fin))
                     throw new Exception('Dates incompatibles');
                 while($date < Carbon::parse($fin)->subMinutes($temps)){
-                    // à revoir
-                    // $newDateTime = Carbon::parse($date)->addMinutes($temps);
-                    // $date =  $newDateTime;
+                    $newDateTime = Carbon::parse($date)->addMinutes($temps);
+                    $date =  $newDateTime;
                     array_push($tab_date, $date);
                 }
     
@@ -320,6 +327,26 @@ class Repository{
             }
     
        }
+
+       function animaux(int $IDClient){
+            return DB::table('Animaux')->where('IDClient',$IDClient)->get()->toArray();
+       }
+
+       function availableSlots(){
+            $slots = DB::table('Creneaux')->select('*')->whereNOTIn('IDCreneau',function($query){
+            $query->select('IDCreneau')->from('Consultations');
+            })
+            ->get()->toArray();
+            return $slots;
+       }
+
+       function bookedSlots(){
+            $slots = DB::table('Creneaux')->select('*')->whereIn('IDCreneau',function($query){
+            $query->select('IDCreneau')->from('Consultations');
+            })
+            ->get()->toArray();
+            return $slots;
+        }
 
         
 }

@@ -165,9 +165,7 @@ class Controller extends BaseController
 
     public function showCreneaux(){
         $vetos = $this->repository->veterinaires();
-        $generCreneaux = $this->repository->generCreneaux('2023-03-27 09:00:00','2023-03-27 11:00:00',30);
-        $this->repository->insertCreneauxGeneres($generCreneaux,1);
-        $creneaux = $this->repository->creneaux();
+        $creneaux = $this->repository->availableSlots();
         return view('creneaux', ['vetos'=>$vetos, 'creneaux'=>$creneaux]);
     }
 
@@ -255,11 +253,40 @@ class Controller extends BaseController
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors("Impossible d'ajouter l'animal");
             }
-        if($request->photoAnimal != NULL)
-            Storage::disk('local')->put("animals/$IDAnimal",$request->photoAnimal);
-        else
-        Storage::copy('animals/image.jpg', "animals/$IDAnimal/image.jpg");
+        // if($request->photoAnimal != NULL)
+        //     Storage::disk('local')->put("animals/$IDAnimal",$request->photoAnimal);
+        // else
+        //     Storage::copy('animals/image.jpg', "animals/$IDAnimal/image.jpg");
 
+        return redirect()->route('welcome.show');
+    }
+
+    public function showConfirmSlotForm(Request $request, int $IDCreneau){
+        if (!($request->session()->has('user')))
+            return redirect()->route('login.show');
+        if ($request->session()->get('userType')==1)
+            return redirect()->route('welcome.show');
+        $creneau = $this->repository->creneau($IDCreneau);
+        $animaux = $this->repository->animaux($request->session()->get('user'));
+        return view('confirmation',['creneau'=>$creneau,'animaux' => $animaux]);
+    }
+
+    function storeSlotConfirmation(Request $request, int $IDCreneau){
+        if (!($request->session()->has('user')))
+            return redirect()->route('login.show');
+        if ($request->session()->get('userType')==1)
+            return redirect()->route('welcome.show');
+        $rules = ['animal'=>['exists:Animaux,IDAnimal']];
+        $messages = ['animal.exists' => 'Vous devez choisir un animal existant.'];
+        $validatedData = $request->validate($rules,$messages);
+        try{
+            $this->repository->insertConsultation(['ObsConsult' => " ", 
+            'MotifConsult'  => " ",
+            'IDAnimal'  => $validatedData['animal'],
+            'IDCreneau'  => $IDCreneau]);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors("Impossible de réserver le créneaux");
+        }
         return redirect()->route('welcome.show');
     }
     

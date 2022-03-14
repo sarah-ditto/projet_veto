@@ -15,7 +15,7 @@ Créneaux
                @if($creneau->IDVeto == $veto->IDVeto)
                 <tr>
         
-                    <td> {{$creneau->DateCreneau}} </td>
+                    <td><a href="{{route('confirmSlot.show', ['IDCreneau'=>$creneau->IDCreneau])}}"> {{$creneau->DateCreneau}} </a></td>
                     
                 </tr>
                 @endif
