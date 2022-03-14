@@ -219,10 +219,6 @@ class Controller extends BaseController
     }
 
     public function storeAnimal(Request $request){
-        $id = 2;
-        $path = "animals/$id";
-        echo($path);
-        die();
         $rules = [
             'photoAnimal' => ['image'],
             'nameAnimal' => ['required'],
