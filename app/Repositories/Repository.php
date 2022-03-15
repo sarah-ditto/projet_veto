@@ -346,9 +346,9 @@ class Repository{
 
        function availableSlots(){
             $slots = DB::table('Creneaux')->select('*')->whereNOTIn('IDCreneau',function($query){
-            $query->select('IDCreneau')->from('Consultations');
-            })
-            ->get()->toArray();
+                $query->select('IDCreneau')->from('Consultations');
+                })
+                ->get()->toArray();
             return $slots;
        }
 
@@ -376,8 +376,26 @@ class Repository{
             -> where ('IDVeto', $IDVeto)
             
                 ->get()->toArray();
-            return $slots;
-            
+            return $slots; 
+        }
+
+        function listAnimals(int $IDVeto){
+            $animals = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
+            ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
+            ->where('Creneaux.IDVeto',$IDVeto)->get()->toArray();
+            var_dump($animals);
+            return $animals;
+        }
+
+        function listClients(int $IDVeto){
+            $clients = DB::table('Clients')->select('*')->whereIn('IDClient',function($query) use ($IDVeto){
+                $query->select('IDClient')->from('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
+                ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
+                ->where('Creneaux.IDVeto',$IDVeto);
+                })
+                ->get()->toArray();
+            var_dump($clients);
+            return $clients;
         }
 
      

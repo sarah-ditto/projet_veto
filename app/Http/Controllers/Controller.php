@@ -342,5 +342,17 @@ class Controller extends BaseController
         
         return view ('List_Reservation', ['veto'=> $veto, 'consultation'=>$consultation] );
     }
+
+    public function showClientsList(Request $request, int $IDVeto){
+        if (!($request->session()->has('user')))
+           return redirect()->route('login.show');
+        if ($request->session()->get('userType')!=1)
+           return redirect()->route('welcome.show');
+        $clients = $this->repository->listClients($IDVeto);
+        $animals = $this->repository->listAnimals($IDVeto);
+
+        return view ('clients_list', ['clients'=> $clients, 'animals'=>$animals] );
+
+    }
     
 }

@@ -36,6 +36,6 @@ use App\Http\Controllers\profileProController;
     Route::get('/vet_profile',[Controller::class, 'showAllVetProfile']) ->name('allVetProfile.show');
     Route::get('/vet_profile/{IDVeto}',[Controller::class, 'showVetProfile']) -> where('IDVeto','[0-9]+') ->name('vetProfile.show');
     Route::get('/appointments', [Controller::class, 'showRDVClient'])->name('appointments.show');
-    
+    Route::get('/clients_list/{IDVeto}',[Controller::class, 'showClientsList']) -> where('IDVeto','[0-9]+') ->name('vetClientsList.show');
     Route::get('/List_Reservation/{IDVeto}', [Controller::class, 'showListReservation']) -> name ('vetCreneau.show');
 
