@@ -115,8 +115,8 @@ class Repository{
         //get et toArray renvoie des tableaux de tableaux
         $client=DB::table('Clients')->where('IDClient', $clientId)->get()->toArray();
         if(empty($client))
-            throw new Exception("Client inconnu"); 
-        return $client[0];
+            throw new Exception("Client inconnu");
+        return $client;
     }
 
     function insertEspeces (array $Especes) :int{
@@ -150,6 +150,22 @@ class Repository{
         ]);
    }
 
+    //affcihe tous les animaux de la base
+    function animaux(): array{
+        return DB::table('Animaux')->get()->toArray();
+    }
+
+    //affiche tous les animaux d'un proprietaire
+    function animauxProprio ($IDClient): array {
+        return  
+        DB::table('Animaux')->where('IDClient',$IDClient)-> get()->toArray();
+    }
+
+    // Affiche un animal
+    function animal ($IDAnimal){
+        $animal = DB::table('Animaux')->where('IDAnimal',$IDAnimal)-> get()->toArray()[0];
+        return $animal;
+    }
 
    function insertCreneaux(array $Creneaux) :int{
         return array_key_exists("IDCreneau", $Creneaux) ? 
@@ -217,23 +233,23 @@ class Repository{
         foreach($this->data->Veterinaires() as $veto){
               $this->insertVeterinaires($veto);
         }
-        // foreach($this->data->Clients()as$Clients){
-        //     $this->insertClients($Clients);
-        // }
+         foreach($this->data->Clients()as$Clients){
+             $this->insertClients($Clients);
+         }
         foreach($this->data->Especes()as$Especes){
             $this->insertEspeces($Especes);
         }
-        // foreach($this->data->Animaux()as$Animaux){
-        //     $this->insertAnimaux($Animaux);
-        // }
+         foreach($this->data->Animaux()as$Animaux){
+             $this->insertAnimaux($Animaux);
+         }
     
          foreach($this->data->Creneaux()as$Creneau){
              $this->insertCreneaux($Creneau);
          }
 
-        // foreach($this->data->Consultations()as$Consultations){
-        //      $this->insertConsultation($Consultations);
-        // }
+         foreach($this->data->Consultations()as$Consultations){
+              $this->insertConsultation($Consultations);
+         }
         // foreach($this->data->PriseEnCharge()as$PriseEnCharge){
         //     $this->insertPriseEnCharge($PriseEnCharge);
         // }
@@ -328,10 +344,6 @@ class Repository{
     
        }
 
-       function animaux(int $IDClient){
-            return DB::table('Animaux')->where('IDClient',$IDClient)->get()->toArray();
-       }
-
        function availableSlots(){
             $slots = DB::table('Creneaux')->select('*')->whereNOTIn('IDCreneau',function($query){
             $query->select('IDCreneau')->from('Consultations');
@@ -356,4 +368,19 @@ class Repository{
             return $consult;
         }
         
+        function bookedSlotsVeto($IDVeto){
+            $slots = DB::table('Creneaux')
+            -> JOIN ('Consultations', 'Creneaux.IDCreneau', '=','Consultations.IDCreneau')
+            ->JOIN('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
+            ->JOIN ('Clients','Animaux.IDClient', '=' ,'Clients.IDClient')
+            -> where ('IDVeto', $IDVeto)
+            
+                ->get()->toArray();
+            return $slots;
+            
+        }
+
+     
+
+
 }

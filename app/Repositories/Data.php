@@ -121,7 +121,7 @@ class Data {
 
     function Clients () {
         return [
-            ['MailClient' => 'BenoiteLambert@gmail.com', 
+            ['MailClient' => 'BenoithhgheLambert@gmail.com', 
             'NomClient'  => 'Bazin',
             'PrenomClient'=>'Benjamin',
             'TelClient'  => '0367536782',
@@ -264,7 +264,7 @@ class Data {
                 'PoidsAnimal' => '6Kg',
                 'SexeAnimal' => 'MALE',
                 'PathologiesAnimal' => 'gale aux oreilles',
-                'MailClient' => 'Bjamin.Bazin@gmail.com',
+                'IDClient' => '1',
                 'TypeAnimal' => 'CHIEN'],
 
             [   'NomAnimal' => 'Cliford', 
@@ -273,7 +273,7 @@ class Data {
                 'PoidsAnimal' => '10Kg',
                 'SexeAnimal' => 'MALE',
                 'PathologiesAnimal' => 'absence',
-                'MailClient' => 'Bjamin.Bazin@gmail.com',
+                'IDClient' => '2',
                 'TypeAnimal' => 'CHIEN'],
 
             [   'NomAnimal' => 'Lana', 
@@ -282,7 +282,16 @@ class Data {
                 'PoidsAnimal' => '12Kg',
                 'SexeAnimal' => 'FEMALE',
                 'PathologiesAnimal' => 'absence',
-                'MailClient' => 'Morel.David@outlook.fr',
+                'IDClient' => '2',
+                'TypeAnimal' => 'CHIEN'],
+
+                [   'NomAnimal' => 'Lara', 
+                'DateNaissAnimal' => '2016-03-02',
+                'SterilisationAnimal' => 'FALSE',
+                'PoidsAnimal' => '12Kg',
+                'SexeAnimal' => 'FEMALE',
+                'PathologiesAnimal' => 'absence',
+                'IDClient' => '2',
                 'TypeAnimal' => 'CHIEN'],
     
         ];
@@ -293,6 +302,12 @@ class Data {
         return [
             ['DateCreneau' => '2023-02-27 19:30:00', 
             'IDVeto' => 1],
+
+            ['DateCreneau' => '2023-02-27 20:30:00', 
+            'IDVeto' => 1],
+            ['DateCreneau' => '2023-02-27 22:30:00', 
+            'IDVeto' => 1],
+
             ['DateCreneau' => '2023-02-27 19:00:00', 
             'IDVeto' => 1],
 
@@ -308,8 +323,27 @@ class Data {
             [
             'ObsConsult' => 'blalhbqjkk', 
             'MotifConsult' => 'dtfcygvkhbjnk,',
+            'IDAnimal' => '2',
+            'IDCreneau'=> '2' ],
+
+            [
+            'ObsConsult' => 'blalhbqjkk', 
+            'MotifConsult' => 'fievre,',
             'IDAnimal' => '1',
             'IDCreneau'=> '1' ],
+            
+            [
+            'ObsConsult' => 'blalhbqjkk', 
+            'MotifConsult' => 'vaccin,',
+            'IDAnimal' => '3',
+            'IDCreneau'=> '3' ],
+
+            [
+            'ObsConsult' => 'blalhbqjkk', 
+            'MotifConsult' => 'analyse',
+            'IDAnimal' => '4',
+            'IDCreneau'=> '4' ],
+            
             
         ];
     }
