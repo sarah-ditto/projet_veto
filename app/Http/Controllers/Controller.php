@@ -34,6 +34,7 @@ class Controller extends BaseController
         return view('all_vet_profile', ['vetos'=>$vetos, 'creneaux'=>$creneaux]); 
     }
     
+   
     public function showWelcome()
     {
         return view('welcome');
@@ -302,6 +303,17 @@ class Controller extends BaseController
         }
         return redirect()->route('welcome.show');
     }
-    
 
+    public function showListReservation (Request $request,$IDVeto){
+       if (!($request->session()->has('user')))
+           return redirect()->route('login.show');
+       if ($request->session()->get('userType')==1)
+           return redirect()->route('welcome.show');
+
+        $veto = $this->repository->veterinaire ($IDVeto);
+        $consultation = $this->repository -> bookedSlotsVeto($IDVeto);
+        
+        return view ('List_Reservation', ['veto'=> $veto, 'consultation'=>$consultation] );
+    }
+    
 }

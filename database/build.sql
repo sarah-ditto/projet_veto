@@ -64,7 +64,7 @@ CREATE TRIGGER validate_email_Clients
 BEGIN
    SELECT
       CASE
-	WHEN NEW.MailClients NOT LIKE '%_@__%.__%' THEN
+	WHEN NEW.MailClient NOT LIKE '%_@__%.__%' THEN
    	  RAISE (ABORT,'Invalid email address')
        END;
 END;
