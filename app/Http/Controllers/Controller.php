@@ -10,6 +10,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 
 class Controller extends BaseController
@@ -21,6 +22,18 @@ class Controller extends BaseController
         $this->repository = $repository;
     }
 
+    public function showVetProfile($IDVeto){
+        $veto = $this->repository->veterinaire ($IDVeto);
+        //$veto= DB::table('Veterinaires')->where('TelVeto',$tel)->get()->toArray();
+        return view('vet_profile', ['veto'=>$veto ]); 
+    }
+
+    public function showAllVetProfile(){
+        $vetos = $this->repository->veterinaires();
+        $creneaux = $this->repository->availableSlots();
+        return view('all_vet_profile', ['vetos'=>$vetos, 'creneaux'=>$creneaux]); 
+    }
+    
     public function showWelcome()
     {
         return view('welcome');

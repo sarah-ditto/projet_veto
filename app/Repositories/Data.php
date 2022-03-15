@@ -43,13 +43,15 @@ class Data {
             'CodePostalVeto'=> 13000 ],
 
 
-    //         ['MailVeto' => 'NathanFernandez@gmail.com', 
-    //         'NomVeto' => 'Nathan', 
-    //         'PrenomVeto' => 'Fernandez', 
-    //         'MdpVeto'=> 'jvj789h', 
-    //         'TelVeto'=> '0647700686', 
-    //         'PresentationVeto'=> 'Docteur Veterinaire Ecole Nationale Vétérinaire de Marseille 1986/1990',
-    //         'CodePostalVeto'=> 13010],
+             ['MailVeto' => 'NathanFernandez@gmail.com', 
+             'NomVeto' => 'Nathan', 
+             'PrenomVeto' => 'Fernandez', 
+             'MdpVeto'=> 'jvj789h', 
+             'TelVeto'=> '0647700686', 
+             'PresentationVeto'=> 'Docteur Veterinaire Ecole Nationale Vétérinaire de Marseille 1986/1990',
+             'NumRueVeto' => 31,
+             'NomRueVeto' =>'Rue du Canada',
+             'CodePostalVeto'=> 13010],
 
     //         ['MailVeto' => 'BoschMarie@gmail.com', 
     //         'NomVeto' => 'Bosch', 
@@ -119,7 +121,7 @@ class Data {
 
     function Clients () {
         return [
-            ['MailClient' => 'Bjamin.Bazin@gmail.com', 
+            ['MailClient' => 'BenoiteLambert@gmail.com', 
             'NomClient'  => 'Bazin',
             'PrenomClient'=>'Benjamin',
             'TelClient'  => '0367536782',

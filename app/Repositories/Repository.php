@@ -53,8 +53,8 @@ class Repository{
 
     function veterinaire ($IDveto){
         $veto = DB::table('Veterinaires')->where('IDVeto',$IDveto)-> get()->toArray()[0];
-        if (count($veto)==0)
-            throw new Exception('Vétérinaire inconnu');
+        //if (count($veto)==0)
+        //    throw new Exception('Vétérinaire inconnu');
         return $veto;
     }
 
@@ -214,9 +214,9 @@ class Repository{
             $this->insertCodesPostaux($cp);
         }
 
-        // foreach($this->data->Veterinaires() as $veto){
-        //      $this->insertVeterinaires($veto);
-        // }
+        foreach($this->data->Veterinaires() as $veto){
+              $this->insertVeterinaires($veto);
+        }
         // foreach($this->data->Clients()as$Clients){
         //     $this->insertClients($Clients);
         // }
@@ -227,9 +227,9 @@ class Repository{
         //     $this->insertAnimaux($Animaux);
         // }
     
-        // foreach($this->data->Creneaux()as$Creneau){
-        //     $this->insertCreneaux($Creneau);
-        // }
+         foreach($this->data->Creneaux()as$Creneau){
+             $this->insertCreneaux($Creneau);
+         }
 
         // foreach($this->data->Consultations()as$Consultations){
         //      $this->insertConsultation($Consultations);

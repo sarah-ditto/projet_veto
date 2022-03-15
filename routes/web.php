@@ -32,9 +32,7 @@ use App\Http\Controllers\profileProController;
     Route::get('/animals', [Controller::class, 'showAnimals'])->name('Animals.store');
     Route::get('/confirmation/{IDCreneau}',[Controller::class, 'showConfirmSlotForm'])->where('IDCreneau', '[0-9]+')->name('confirmSlot.show');
     Route::post('/confirmation/{IDCreneau}',[Controller::class, 'storeSlotConfirmation'])->where('IDCreneau', '[0-9]+')->name('confirmSlot.post');
-
-    //vue profil veto (zied)
-    Route::get('/vet_profile',[profileProController::class, 'showVetProfile']) ->name('vetProfile.post');
-    Route::get('/vet_profile/{IDVeto}',[profileProController::class, 'showVetProfile']) -> where('IDVeto','[0-9]+') ->name('vetProfile.show');
-    Route::get('/creneaux',[Controller::class, 'showCreneaux'])->name('creneaux.show');
+    Route::get('/vet_profile',[Controller::class, 'showAllVetProfile']) ->name('allVetProfile.show');
+    Route::get('/vet_profile/{IDVeto}',[Controller::class, 'showVetProfile']) -> where('IDVeto','[0-9]+') ->name('vetProfile.show');
+    
     

@@ -46,6 +46,53 @@ CodePostalVeto VARCHAR(5) NOT NULL CHECK (length(CodePostalVeto) >= 4),
 CONSTRAINT fk_Veto_ref_cp FOREIGN KEY (CodePostalVeto) REFERENCES CodesPostaux(CodePostal)
 );
 
+
+DROP TRIGGER IF EXISTS validate_email_Veterinaires;
+CREATE TRIGGER validate_email_Veterinaires
+   BEFORE INSERT ON Veterinaires
+BEGIN
+   SELECT
+      CASE
+	WHEN NEW.MailVeto NOT LIKE '%_@__%.__%' THEN
+   	  RAISE (ABORT,'Invalid email address')
+       END;
+END;
+
+DROP TRIGGER IF EXISTS validate_email_Clients;
+CREATE TRIGGER validate_email_Clients
+   BEFORE INSERT ON Clients
+BEGIN
+   SELECT
+      CASE
+	WHEN NEW.MailClients NOT LIKE '%_@__%.__%' THEN
+   	  RAISE (ABORT,'Invalid email address')
+       END;
+END;
+
+DROP TRIGGER IF EXISTS validate_MailVeto_NOTIN_On_Clients;
+CREATE TRIGGER validate_MailVeto_NOTIN_On_Clients 
+   BEFORE INSERT ON Veterinaires
+BEGIN
+   SELECT
+      CASE
+   WHEN NEW.MailVeto IN (SELECT MailClient FROM Clients) THEN
+   	  RAISE (ABORT,'email address exist in Clients')
+       END;
+END;
+
+
+
+DROP TRIGGER IF EXISTS validate_MailClients_NOTIN_On_Veto;
+CREATE TRIGGER validate_MailClients_NOTIN_On_Veto 
+   BEFORE INSERT ON Clients
+BEGIN
+   SELECT
+      CASE
+   WHEN NEW.MailClient IN (SELECT MailVeto FROM Veterinaires ) THEN
+   	  RAISE (ABORT,'email address already exist in Veto')
+       END;
+END;
+
 /*CREATE TABLE HorairesVeto (
 DateDebutAM DATE , 
 DateFinAM DATE CHECK (DateDebutAM < DateFinAM) ,
