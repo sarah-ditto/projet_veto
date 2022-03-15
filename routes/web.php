@@ -29,10 +29,11 @@ use App\Http\Controllers\profileProController;
     Route::post('/create_slots',[Controller::class, 'storeSlots'])->name('createSlots.post');
     Route::get('/create_animal', [Controller::class, 'createAnimal'])->name('createAnimal.show');
     Route::post('/create_animal', [Controller::class, 'storeAnimal'])->name('createAnimal.post');
-    Route::get('/animals', [Controller::class, 'showAnimals'])->name('Animals.store');
+    Route::get('/profil_client_and_animals', [Controller::class, 'showAnimals'])->name('Animals.store');
+    Route::get('/profil_client_and_animals/{IDAnimal}', [Controller::class, 'showAnimalProfile']) -> where('IDAnimal','[0-9]+') ->name('Animal.show');    
     Route::get('/confirmation/{IDCreneau}',[Controller::class, 'showConfirmSlotForm'])->where('IDCreneau', '[0-9]+')->name('confirmSlot.show');
     Route::post('/confirmation/{IDCreneau}',[Controller::class, 'storeSlotConfirmation'])->where('IDCreneau', '[0-9]+')->name('confirmSlot.post');
     Route::get('/vet_profile',[Controller::class, 'showAllVetProfile']) ->name('allVetProfile.show');
     Route::get('/vet_profile/{IDVeto}',[Controller::class, 'showVetProfile']) -> where('IDVeto','[0-9]+') ->name('vetProfile.show');
-    
+
     
