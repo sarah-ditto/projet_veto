@@ -20,9 +20,9 @@ Votre Profil et vos compagnons
                     <div class="col-md-6"><label class="labels"><b>Nom</b></label> {{$client->NomClient}} <br></div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col-md-12"><label class="labels"><b>Numéro de téléphone</b></label> {{$client->TelClient}}<br></div>
-                    <div class="col-md-12"><label class="labels"><b>Adresse</b></label> {{$client->NumRueClient}} {{$client->NomRueClient}}</div>
-                    <div class="col-md-12"><label class="labels"><b>Code Postale</b></label> {{$client->CodePostalClient}}</div>
+                <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom"> local_phone</i>N° {{$client->TelClient}}<br></div>
+                <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-bottom:-15px; margin-right: 10px"> location_city </i></label> {{$client->NumRueClient}} {{$client->NomRueClient}}</div>
+                <div class="col-md-12"><label class="labels" style="margin-left:42px"> {{$client->CodePostalClient}}</div>
                     <div class="col-md-12"><label class="labels"><b>Email</b></label> {{$client->MailClient}}<br></div>
                 </div>
         </div>
