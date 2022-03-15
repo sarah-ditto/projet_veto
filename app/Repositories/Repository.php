@@ -51,16 +51,18 @@ class Repository{
         ;
     }
 
-    function veterinaire ($IDveto){
-        $veto = DB::table('Veterinaires')->where('IDVeto',$IDveto)-> get()->toArray()[0];
-        //if (count($veto)==0)
-        //    throw new Exception('Vétérinaire inconnu');
+    function veterinaire ( int $IDveto){
+        $veto = DB::table('Veterinaires')->where('IDVeto',$IDveto)
+        ->join('CodesPostaux', 'Veterinaires.CodePostalVeto', '=', 'CodesPostaux.CodePostal')->get()->toArray()[0];
+        if (count((array)$veto)==0)
+           throw new Exception('Vétérinaire inconnu');
         return $veto;
     }
 
     function veterinaires(){
         return  
-        DB::table('Veterinaires')-> get()->toArray();
+        DB::table('Veterinaires')->join('CodesPostaux', 'Veterinaires.CodePostalVeto', '=', 'CodesPostaux.CodePostal')
+        -> get()->toArray();
     
     }
 
@@ -352,11 +354,11 @@ class Repository{
             return $slots;
        }
 
-       function bookedSlots(){
-            $slots = DB::table('Creneaux')->select('*')->whereIn('IDCreneau',function($query){
+       function availableSlotsVeto(int $IDVeto){
+            $slots = DB::table('Creneaux')->select('*')->whereNOTIn('IDCreneau',function($query){
             $query->select('IDCreneau')->from('Consultations');
             })
-            ->get()->toArray();
+            ->where('IDVeto',$IDVeto)->get()->toArray();
             return $slots;
         }
 
@@ -383,7 +385,6 @@ class Repository{
             $animals = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
             ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
             ->where('Creneaux.IDVeto',$IDVeto)->get()->toArray();
-            var_dump($animals);
             return $animals;
         }
 
@@ -394,11 +395,6 @@ class Repository{
                 ->where('Creneaux.IDVeto',$IDVeto);
                 })
                 ->get()->toArray();
-            var_dump($clients);
             return $clients;
-        }
-
-     
-
-
+        } 
 }

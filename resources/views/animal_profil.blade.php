@@ -15,7 +15,7 @@ Fiche Animal de {{$animal->NomAnimal}}
 <b> Pathologies : </b>{{$animal->PathologiesAnimal}}<br>
 
 <form>
-  <input type="button" value="Retour sur votre Profil" onclick="history.go(-1)">
+  <input type="button" value="Retour" onclick="history.go(-1)">
 </form>
 
 

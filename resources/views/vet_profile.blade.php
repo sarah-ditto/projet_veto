@@ -29,23 +29,31 @@
                 <div class="d-flex justify-content-between align-items-center mb-3"></div>
                 <div class="row mt-2">
                     <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-bottom:-15px; margin-right: 10px">location_city </i> {{$veto->NumRueVeto}} {{$veto->NomRueVeto}}</label></div>
-                    <div class="col-md-6"><label class="labels" style="margin-left:42px">{{$veto->CodePostalVeto}} Marseille</label></div>
+                    <div class="col-md-6"><label class="labels" style="margin-left:42px">{{$veto->CodePostalVeto}} {{$veto->Ville}} </label></div>
                 </div>
                 
                 <div class="row mt-3">
                     <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-right: 15px"> local_phone</i>N° {{$veto->TelVeto}}</label></div>
-                    <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-right: 15px"> train</i> Moyen de transport ...</label></div>
+                    <!-- <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-right: 15px"> train</i> Moyen de transport ...</label></div> -->
                    
                 </div>
 
                 <div class="row mt-3">
-                    <div class="col-md-12"><label class="labels">Info pratique</label></div>
-                    <div class="col-md-12"><label class="labels">Présentation</label></div>
+                    <!-- <div class="col-md-12"><label class="labels">Info pratique</label></div> -->
+                    <div class="col-md-12"><label class="labels">Présentation : {{$veto->PresentationVeto}}  </label></div>
         
                 </div>
                
             </div>
-            
+            <div>Créneaux disponibles :  
+               <table border="2"> 
+               @foreach($creneaux as $creneau)
+                    <tr>
+                        <td class="col-md-10 border-top "><a href="{{route('confirmSlot.show', ['IDCreneau'=>$creneau->IDCreneau])}}"> {{$creneau->DateCreneau}} </a></td>
+                    </tr>
+                @endforeach
+               </table>
+            </div>
         </div>
         
     </div>

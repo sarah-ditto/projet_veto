@@ -23,9 +23,10 @@ class Controller extends BaseController
     }
 
     public function showVetProfile($IDVeto){
-        $veto = $this->repository->veterinaire ($IDVeto);
-        //$veto= DB::table('Veterinaires')->where('TelVeto',$tel)->get()->toArray();
-        return view('vet_profile', ['veto'=>$veto ]); 
+        $veto = $this->repository->veterinaire($IDVeto);
+        $creneaux = $this->repository->availableSlotsVeto($IDVeto);
+        
+        return view('vet_profile', ['veto'=>$veto,'creneaux'=>$creneaux]); 
     }
 
     public function showAllVetProfile(){
@@ -289,6 +290,8 @@ class Controller extends BaseController
     }
 
     public function showAnimals(Request $request){
+        if (!($request->session()->has('user')))
+            return redirect()->route('login.show');
         $IDuser = $request->session()->get('user');
         $IDuser = (int)($IDuser);
         $animaux = $this->repository->animauxProprio($IDuser);
@@ -297,7 +300,9 @@ class Controller extends BaseController
     return view('profil_client_and_animals', ['animaux'=>$animaux,'client'=>$client]);
     }
 
-    public function showAnimalProfile($IDAnimal){
+    public function showAnimalProfile(Request $request,$IDAnimal){
+        if (!($request->session()->has('user')))
+            return redirect()->route('login.show');
         $animal = $this->repository->animal($IDAnimal);
         return view('animal_profil', ['animal'=>$animal]); 
     }
@@ -332,10 +337,12 @@ class Controller extends BaseController
     
 
     public function showListReservation (Request $request,$IDVeto){
-       if (!($request->session()->has('user')))
-           return redirect()->route('login.show');
-       if ($request->session()->get('userType')==1)
-           return redirect()->route('welcome.show');
+        if (!($request->session()->has('user')))
+            return redirect()->route('login.show');
+        if ($request->session()->get('userType')!=1)
+            return redirect()->route('welcome.show');
+        if ($request->session()->get('user')!=$IDVeto)
+            return redirect()->route('welcome.show');
 
         $veto = $this->repository->veterinaire ($IDVeto);
         $consultation = $this->repository -> bookedSlotsVeto($IDVeto);
