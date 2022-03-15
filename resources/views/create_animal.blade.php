@@ -3,6 +3,15 @@
 @section('title', 'Ajouter un animal')
 
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 <form method="POST" action="{{route('createAnimal.post')}}" enctype="multipart/form-data" >
     @csrf
     @if ($errors->any())

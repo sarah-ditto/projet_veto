@@ -32,7 +32,8 @@
                             <a class="dropdown-item" href="{{route('createSlots.show')}}">Créer des créneaux</a>
                         @else
                             <a class="dropdown-item">Mes rendez-vous</a>
-                            <a class="dropdown-item">Mes informations</a>
+                            <a class="dropdown-item" href="{{route('Animals.store')}}">Mes informations</a>
+                            <a class="dropdown-item" href="{{route('createAnimal.show')}}">Entrez un nouveau compagnon</a>
                         @endif
                         </div>
                     </div>
