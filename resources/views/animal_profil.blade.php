@@ -12,6 +12,7 @@ Fiche Animal de {{$animal->NomAnimal}}
 <b> Poids : </b>{{$animal->PoidsAnimal}}<br>
 <b> Sexe : </b>{{$animal->SexeAnimal}}<br>
 <b> Type : </b>{{$animal->TypeAnimal}}<br>
+<b> Pathologies : </b>{{$animal->PathologiesAnimal}}<br>
 
 <form>
   <input type="button" value="Retour sur votre Profil" onclick="history.go(-1)">
