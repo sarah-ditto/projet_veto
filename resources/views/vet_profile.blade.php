@@ -8,8 +8,8 @@
 @endsection
 
 @section('content')
-<form method="POST" action="{{route('vetProfile.post')}}">
-@csrf
+
+
 
 @if ($errors->any())
     <div class="alert alert-warning">
