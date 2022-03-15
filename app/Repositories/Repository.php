@@ -291,7 +291,7 @@ class Repository{
             $userVeto = DB::table('Veterinaires')->where('MailVeto', $email)->select(['IDVeto as ID','MdpVeto as Password','1 as Type']);
             $user = DB::table('Clients')->where('MailClient', $email)->select(['IDClient as ID','MdpClient as Password','2 as Type'])
                     ->union($userVeto)->get(['ID','Password','Type']);
-            print_r($user);
+            
             
             if (count($user)==0)
                 throw new Exception('Utilisateur inconnu');
@@ -348,5 +348,12 @@ class Repository{
             return $slots;
         }
 
+        function getConsultClient(int $IDClient){
+            $consult = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
+            ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
+            ->join('Veterinaires', 'Creneaux.IDVeto', '=', 'Veterinaires.IDVeto')
+            ->where('Animaux.IDClient',$IDClient)->get()->toArray();
+            return $consult;
+        }
         
 }

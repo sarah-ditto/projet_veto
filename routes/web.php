@@ -34,5 +34,5 @@ use App\Http\Controllers\profileProController;
     Route::post('/confirmation/{IDCreneau}',[Controller::class, 'storeSlotConfirmation'])->where('IDCreneau', '[0-9]+')->name('confirmSlot.post');
     Route::get('/vet_profile',[Controller::class, 'showAllVetProfile']) ->name('allVetProfile.show');
     Route::get('/vet_profile/{IDVeto}',[Controller::class, 'showVetProfile']) -> where('IDVeto','[0-9]+') ->name('vetProfile.show');
-    
+    Route::get('/appointments', [Controller::class, 'showRDVClient'])->name('appointments.show');
     

@@ -302,6 +302,15 @@ class Controller extends BaseController
         }
         return redirect()->route('welcome.show');
     }
+
+    public function showRDVClient(Request $request){
+        if (!($request->session()->has('user')))
+            return redirect()->route('login.show');
+        if ($request->session()->get('userType')==1)
+            return redirect()->route('welcome.show');
+        $consults = $this->repository->getConsultClient($request->session()->get('user'));
+        return view('mes_rdv_client',['consults'=>$consults]);
+    }
     
 
 }

@@ -8,14 +8,7 @@
 @endsection
 
 @section('content')
-<form method="POST" action="{{route('vetProfile.post')}}">
-@csrf
 
-@if ($errors->any())
-    <div class="alert alert-warning">
-        Impossible d'afficher le profile &#9785;
-    </div>
-@endif
 
 
 <div class="container rounded bg-white mt-5 mb-5">
@@ -45,7 +38,7 @@
 
                 <div class="row mt-3">
                     <div class="col-md-12"><label class="labels">Info pratique</label></div>
-                    <div class="col-md-12"><label class="labels">Présentation ;</label></div>
+                    <div class="col-md-12"><label class="labels">Présentation</label></div>
         
                 </div>
                
