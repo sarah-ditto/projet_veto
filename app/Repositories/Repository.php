@@ -115,8 +115,8 @@ class Repository{
         //get et toArray renvoie des tableaux de tableaux
         $client=DB::table('Clients')->where('IDClient', $clientId)->get()->toArray();
         if(empty($client))
-            throw new Exception("Client inconnu"); 
-        return $client[0];
+            throw new Exception("Client inconnu");
+        return $client;
     }
 
     function insertEspeces (array $Especes) :int{
@@ -150,6 +150,22 @@ class Repository{
         ]);
    }
 
+    //affcihe tous les animaux de la base
+    function animaux(): array{
+        return DB::table('Animaux')->get()->toArray();
+    }
+
+    //affiche tous les animaux d'un proprietaire
+    function animauxProprio ($IDClient): array {
+        return  
+        DB::table('Animaux')->where('IDClient',$IDClient)-> get()->toArray();
+    }
+
+    // Affiche un animal
+    function animal ($IDAnimal){
+        $animal = DB::table('Animaux')->where('IDAnimal',$IDAnimal)-> get()->toArray()[0];
+        return $animal;
+    }
 
    function insertCreneaux(array $Creneaux) :int{
         return array_key_exists("IDCreneau", $Creneaux) ? 
@@ -326,10 +342,6 @@ class Repository{
                 $this->insertCreneaux(['IDVeto'=>$IDVeto,'DateCreneau'=>$date]);
             }
     
-       }
-
-       function animaux(int $IDClient){
-            return DB::table('Animaux')->where('IDClient',$IDClient)->get()->toArray();
        }
 
        function availableSlots(){

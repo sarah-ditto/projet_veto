@@ -275,14 +275,31 @@ class Controller extends BaseController
         return redirect()->route('welcome.show');
     }
 
+
+    
+
     public function showConfirmSlotForm(Request $request, int $IDCreneau){
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
         if ($request->session()->get('userType')==1)
             return redirect()->route('welcome.show');
         $creneau = $this->repository->creneau($IDCreneau);
-        $animaux = $this->repository->animaux($request->session()->get('user'));
+        $animaux = $this->repository->animauxProprio($request->session()->get('user'));
         return view('confirmation',['creneau'=>$creneau,'animaux' => $animaux]);
+    }
+
+    public function showAnimals(Request $request){
+        $IDuser = $request->session()->get('user');
+        $IDuser = (int)($IDuser);
+        $animaux = $this->repository->animauxProprio($IDuser);
+        $client = $this->repository->client($IDuser)[0];
+
+    return view('profil_client_and_animals', ['animaux'=>$animaux,'client'=>$client]);
+    }
+
+    public function showAnimalProfile($IDAnimal){
+        $animal = $this->repository->animal($IDAnimal);
+        return view('animal_profil', ['animal'=>$animal]); 
     }
 
     function storeSlotConfirmation(Request $request, int $IDCreneau){
