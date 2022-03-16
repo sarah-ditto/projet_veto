@@ -26,13 +26,13 @@
                         left: 0px; transform: translate3d(0px, 38px, 0px);"
                         x-placement="bottom-start">
                         @if (session()->get('userType')==1)
-                            <a class="dropdown-item" href= "{{route('vetCreneau.show', ['IDVeto'=>session()->get('user')])}}">Mon agenda</a>
-                            <a class="dropdown-item" href="{{route('vetClientsList.show', ['IDVeto'=>session()->get('user')])}}">Mes clients</a>
+                            <a class="dropdown-item" href= "{{route('bookedSlots.show')}}">Mon agenda</a>
+                            <a class="dropdown-item" href="{{route('clientsList.show')}}">Mes clients</a>
                             <a class="dropdown-item" href="{{route('vetProfile.show', ['IDVeto'=>session()->get('user')])}}">Mes informations</a>
                             <a class="dropdown-item" href="{{route('createSlots.show')}}">Créer des créneaux</a>
                         @else
                             <a class="dropdown-item" href="{{route('appointments.show')}}">Mes rendez-vous</a>
-                            <a class="dropdown-item" href="{{route('Animals.store')}}">Mes informations</a>
+                            <a class="dropdown-item" href="{{route('client.show',['IDClient'=>session()->get('user')])}}">Mes informations</a>
                             <a class="dropdown-item" href="{{route('createAnimal.show')}}">Entrez un nouveau compagnon</a>
                         @endif
                         </div>

@@ -384,17 +384,46 @@ class Repository{
         function listAnimals(int $IDVeto){
             $animals = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
             ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
-            ->where('Creneaux.IDVeto',$IDVeto)->get()->toArray();
+            ->where('Creneaux.IDVeto',$IDVeto)->select('Animaux.NomAnimal','Animaux.IDAnimal','Animaux.IDClient')->distinct()->get()->toArray();
+            return $animals;
+        }
+
+        function listAnimalsOfClient(int $IDVeto, int $IDClient){
+            $animals = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
+            ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
+            ->where('Creneaux.IDVeto',$IDVeto)
+            ->where('Animaux.IDClient',$IDClient)
+            ->get()->toArray();
             return $animals;
         }
 
         function listClients(int $IDVeto){
-            $clients = DB::table('Clients')->select('*')->whereIn('IDClient',function($query) use ($IDVeto){
+            $clients = DB::table('Clients')->select('*')->distinct()->whereIn('IDClient',function($query) use ($IDVeto){
                 $query->select('IDClient')->from('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
                 ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
                 ->where('Creneaux.IDVeto',$IDVeto);
                 })
                 ->get()->toArray();
             return $clients;
-        } 
+        }
+        
+        function isVetofClient(int $IDClient, int $IDVeto){
+            $veto = DB::table('Consultations')->join('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
+            ->join('Creneaux', 'Consultations.IDCreneau', '=','Creneaux.IDCreneau')
+            ->where('Creneaux.IDVeto',$IDVeto)
+            ->where('Animaux.IDClient',$IDClient)->get()->toArray();
+            if (count($veto)!=0)
+                return 1;
+            return 0;
+        }
+
+        function isVetofAnimal(int $IDAnimal, int $IDVeto){
+            $veto = DB::table('Consultations')->join('Creneaux', 'Consultations.IDCreneau', '=','Creneaux.IDCreneau')
+            ->where('Creneaux.IDVeto',$IDVeto)
+            ->where('Consultations.IDAnimal',$IDAnimal)->get()->toArray();
+            if (count($veto)!=0)
+                return 1;
+            return 0;
+
+        }
 }

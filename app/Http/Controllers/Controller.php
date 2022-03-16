@@ -17,8 +17,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function __construct(Repository $repository)
-    {
+    public function __construct(Repository $repository){
         $this->repository = $repository;
     }
 
@@ -29,30 +28,27 @@ class Controller extends BaseController
         return view('vet_profile', ['veto'=>$veto,'creneaux'=>$creneaux]); 
     }
 
-    public function showAllVetProfile(){
+    public function showAllVetProfiles(){
         $vetos = $this->repository->veterinaires();
         $creneaux = $this->repository->availableSlots();
-        return view('all_vet_profile', ['vetos'=>$vetos, 'creneaux'=>$creneaux]); 
+        return view('all_vet_profiles', ['vetos'=>$vetos, 'creneaux'=>$creneaux]); 
     }
     
-   
-    public function showWelcome()
-    {
+    public function showWelcome(){
         return view('welcome');
     }
 
-    public function showAbout()
-    {
+    public function showAbout(){
         return view('about');
     }
 
-    public function showFaq()
-    {
+    public function showFaq(){
         return view('faq');
     }
 
-    public function showLogin()
-    {
+    public function showLogin(Request $request){
+        if ($request->session()->has('user'))
+            return redirect()->route('welcome.show');
         return view('login');
     }
 
@@ -68,8 +64,7 @@ class Controller extends BaseController
     //     return view('creneaux', ['vetos'=>$vetos, 'creneaux'=>$creneaux]);
     // }
 
-    public function storeClient(Request $request)
-    {
+    public function storeClient(Request $request){
         $messages=[
             'MailClient.required' => 'Vous devez saisir un e-mail.',
             'MailClient.email' => 'Vous devez saisir un e-mail valide.',
@@ -149,8 +144,7 @@ class Controller extends BaseController
             return redirect()->route('welcome.show');
     }
 
-    public function login(Request $request, Repository $repository)
-    {
+    public function login(Request $request, Repository $repository){
         $rules = [
             'email' => ['required', 'email'],
             'password' => ['required']
@@ -171,8 +165,7 @@ class Controller extends BaseController
         return redirect()->route('welcome.show');
     }
 
-    public function logout(Request $request) 
-    {
+    public function logout(Request $request) {
         $request->session()->forget('user');
         $request->session()->forget('userType');
         return redirect()->route('welcome.show');
@@ -276,9 +269,6 @@ class Controller extends BaseController
         return redirect()->route('welcome.show');
     }
 
-
-    
-
     public function showConfirmSlotForm(Request $request, int $IDCreneau){
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -289,20 +279,28 @@ class Controller extends BaseController
         return view('confirmation',['creneau'=>$creneau,'animaux' => $animaux]);
     }
 
-    public function showAnimals(Request $request){
+    public function showClient(Request $request, int $IDClient){
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        $IDuser = $request->session()->get('user');
-        $IDuser = (int)($IDuser);
-        $animaux = $this->repository->animauxProprio($IDuser);
-        $client = $this->repository->client($IDuser)[0];
-
-    return view('profil_client_and_animals', ['animaux'=>$animaux,'client'=>$client]);
+        if (($request->session()->get('userType')==2)&&($request->session()->get('user')!=$IDClient))
+            return redirect()->route('welcome.show');
+        if (($request->session()->get('userType')==1)&&($this->repository->isVetofClient($IDClient,$request->session()->get('user'))==0))
+            return redirect()->route('welcome.show');
+        if ($request->session()->get('userType')==1)
+            $animaux = $this->repository->listAnimalsOfClient($request->session()->get('user'),$IDClient);
+        else 
+            $animaux = $this->repository->animauxProprio($IDClient);
+        $client = $this->repository->client($IDClient)[0];
+        return view('client_profile', ['animaux'=>$animaux,'client'=>$client]);
     }
 
-    public function showAnimalProfile(Request $request,$IDAnimal){
+    public function showAnimal(Request $request, int $IDClient, int $IDAnimal){
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
+        if (($request->session()->get('userType')==2)&&($request->session()->get('user')!=$IDClient))
+            return redirect()->route('welcome.show');
+        if (($request->session()->get('userType')==1)&&($this->repository->isVetofAnimal($IDAnimal,$request->session()->get('user'))==0))
+            return redirect()->route('welcome.show');
         $animal = $this->repository->animal($IDAnimal);
         return view('animal_profil', ['animal'=>$animal]); 
     }
@@ -326,40 +324,33 @@ class Controller extends BaseController
         return redirect()->route('welcome.show');
     }
 
-    public function showRDVClient(Request $request){
+    public function showClientAppointments(Request $request){
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
         if ($request->session()->get('userType')==1)
             return redirect()->route('welcome.show');
         $consults = $this->repository->getConsultClient($request->session()->get('user'));
-        return view('mes_rdv_client',['consults'=>$consults]);
+        return view('client_appointments',['consults'=>$consults]);
     }
     
-
-    public function showListReservation (Request $request,$IDVeto){
+    public function showBookedSlotsList (Request $request){
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
         if ($request->session()->get('userType')!=1)
             return redirect()->route('welcome.show');
-        if ($request->session()->get('user')!=$IDVeto)
-            return redirect()->route('welcome.show');
-
-        $veto = $this->repository->veterinaire ($IDVeto);
-        $consultation = $this->repository -> bookedSlotsVeto($IDVeto);
-        
-        return view ('List_Reservation', ['veto'=> $veto, 'consultation'=>$consultation] );
+        $veto = $this->repository->veterinaire ($request->session()->get('user'));
+        $consultations = $this->repository -> bookedSlotsVeto($request->session()->get('user'));
+        return view ('booked_slots', ['veto'=> $veto, 'consultations'=>$consultations] );
     }
 
-    public function showClientsList(Request $request, int $IDVeto){
+    public function showClientsList(Request $request){
         if (!($request->session()->has('user')))
            return redirect()->route('login.show');
         if ($request->session()->get('userType')!=1)
            return redirect()->route('welcome.show');
-        $clients = $this->repository->listClients($IDVeto);
-        $animals = $this->repository->listAnimals($IDVeto);
-
+        $clients = $this->repository->listClients($request->session()->get('user'));
+        $animals = $this->repository->listAnimals($request->session()->get('user'));
         return view ('clients_list', ['clients'=> $clients, 'animals'=>$animals] );
 
     }
-    
 }

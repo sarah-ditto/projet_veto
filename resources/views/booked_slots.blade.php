@@ -32,14 +32,14 @@ Mes Rendez-Vous
 
                     </tr>
                     
-                            @foreach($consultation as $consult )
+                            @foreach($consultations as $consult )
                             
                                 <tr>
                                     
                                     <td class="col-md-10 border-top "> {{$consult->DateCreneau}}</td>
                                     <td class="col-md-10 border-top "> {{$consult->MotifConsult}} </td>
-                                    <td class="col-md-10 border-top "> {{$consult->NomClient}} {{$consult->PrenomClient}} </td>
-                                    <td class="col-md-10 border-top "> <a href="{{route('Animal.show', ['IDAnimal'=>$consult->IDAnimal])}}">{{$consult->NomAnimal}}</a></td>
+                                    <td class="col-md-10 border-top "> <a href="{{route('client.show',['IDClient'=>$consult->IDClient])}}">{{$consult->NomClient}} {{$consult->PrenomClient}}</a> </td>
+                                    <td class="col-md-10 border-top "> <a href="{{route('animal.show', ['IDAnimal'=>$consult->IDAnimal, 'IDClient'=>$consult->IDClient ])}}"> {{$consult->NomAnimal}}</a></td>
                                 </tr>
                             @endforeach
                     </table>   

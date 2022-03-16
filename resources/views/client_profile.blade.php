@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('title')
-Votre Profil et vos compagnons
+Profil et compagnons
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@ Votre Profil et vos compagnons
         <div class="col-md-5 border-right">
             <div class="p-3 py-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-right">Vos Informations</h4>
+                    <h4 class="text-right">Informations</h4>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6"><label class="labels"><b>Prenom</b></label> {{$client->PrenomClient}}<br></div>
@@ -25,11 +25,11 @@ Votre Profil et vos compagnons
         </div>
     </div>
     
-        <h4 class="text-right">Vos Compagnons</h4>
+        <h4 class="text-right">Compagnons</h4>
                 <table>
                     @foreach($animaux as $animal)
                 <tr>
-                    <td><a href="{{route('Animal.show', ['IDAnimal'=>$animal->IDAnimal])}}"> {{$animal->NomAnimal}}</td>
+                    <td><a href="{{route('animal.show', ['IDAnimal'=>$animal->IDAnimal, 'IDClient'=>$animal->IDClient ])}}"> {{$animal->NomAnimal}}</a></td>
                 </tr>
                     @endforeach
                 </table> 
