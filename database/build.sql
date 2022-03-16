@@ -9,14 +9,13 @@ DROP TABLE IF EXISTS Creneaux;
 DROP TABLE IF EXISTS Consultations;
 
 
-CREATE TABLE Especes ( 
+CREATE TABLE Especes( 
 TypeAnimal VARCHAR (30) PRIMARY KEY 
 ) ;
 
 CREATE TABLE CodesPostaux(
 CodePostal VARCHAR(5) PRIMARY KEY,
-Ville VARCHAR(30) NOT NULL,
-UNIQUE(CodePostal,Ville)
+Ville VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE Clients(
@@ -79,8 +78,6 @@ BEGIN
    	  RAISE (ABORT,'email address exist in Clients')
        END;
 END;
-
-
 
 DROP TRIGGER IF EXISTS validate_MailClients_NOTIN_On_Veto;
 CREATE TRIGGER validate_MailClients_NOTIN_On_Veto 
@@ -146,4 +143,3 @@ IDCreneau INTEGER,
 CONSTRAINT fk_Consul_ref_Animaux FOREIGN KEY (IDAnimal) REFERENCES Animaux (IDAnimal),
 CONSTRAINT fk_Consult_ref_Creneaux FOREIGN KEY (IDCreneau) REFERENCES Creneaux (IDCreneau)
 );
-

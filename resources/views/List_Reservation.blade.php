@@ -39,7 +39,7 @@ Mes Rendez-Vous
                                     <td class="col-md-10 border-top "> {{$consult->DateCreneau}}</td>
                                     <td class="col-md-10 border-top "> {{$consult->MotifConsult}} </td>
                                     <td class="col-md-10 border-top "> {{$consult->NomClient}} {{$consult->PrenomClient}} </td>
-                                    <td class="col-md-10 border-top ">  {{$consult->NomAnimal}} </td>
+                                    <td class="col-md-10 border-top "> <a href="{{route('Animal.show', ['IDAnimal'=>$consult->IDAnimal])}}">{{$consult->NomAnimal}}</a></td>
                                 </tr>
                             @endforeach
                     </table>   
