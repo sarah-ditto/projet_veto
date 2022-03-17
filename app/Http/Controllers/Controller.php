@@ -210,8 +210,8 @@ class Controller extends BaseController
         $start = "$date $startTime";
         $end = "$date $endTime";
         try {
-            $slots = $this->repository->generCreneaux($start, $end, $validatedData['duration']);
-            $this->repository->insertCreneauxGeneres($slots,$request->session()->get('user'));
+            $slots = $this->repository->createSlots($start, $end, $validatedData['duration']);
+            $this->repository->insertCreatedSlots($slots,$request->session()->get('user'));
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors(['startDate'=>"Impossible de créer vos créneaux.".$e->getMessage()]);
             }
@@ -329,8 +329,9 @@ class Controller extends BaseController
             return redirect()->route('login.show');
         if ($request->session()->get('userType')==1)
             return redirect()->route('welcome.show');
-        $consults = $this->repository->getConsultClient($request->session()->get('user'));
-        return view('client_appointments',['consults'=>$consults]);
+        $futureConsults = $this->repository->getFutureAppointmentsClient($request->session()->get('user'));
+        $pastConsults = $this->repository->getPastAppointmentsClient($request->session()->get('user'));
+        return view('client_appointments',['pastConsults'=>$pastConsults,'futureConsults'=>$futureConsults]);
     }
     
     public function showBookedSlotsList (Request $request){

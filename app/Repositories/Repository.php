@@ -322,13 +322,13 @@ class Repository{
         }
 
         // génère un tableau de créneaux de $temps minutes à partir d'une date jusqu'à une date de fin
-        function generCreneaux(string $debutjour, string $finjour, int $temps): array
+        function createSlots(string $debutjour, string $finjour, int $temps): array
         {
                 $date =  Carbon::parse($debutjour);
                 $fin =  Carbon::parse($finjour);
                 $tab_date = [$date];
-                if (Carbon::parse($date)->gt($fin))
-                    throw new Exception('Dates incompatibles');
+                if ((Carbon::parse($date)->gt($fin))||($date<Carbon::now()))
+                    throw new Exception('Dates incompatibles.');
                 while($date < Carbon::parse($fin)->subMinutes($temps)){
                     $newDateTime = Carbon::parse($date)->addMinutes($temps);
                     $date =  $newDateTime;
@@ -339,7 +339,7 @@ class Repository{
         }
     
        // Insère la liste de créneaux générés pour un véto dans la table Créneaux
-       function insertCreneauxGeneres(array $tab_date, $IDVeto): void{
+       function insertCreatedSlots(array $tab_date, $IDVeto): void{
             foreach($tab_date as $date){
                 $this->insertCreneaux(['IDVeto'=>$IDVeto,'DateCreneau'=>$date]);
             }
@@ -347,37 +347,57 @@ class Repository{
        }
 
        function availableSlots(){
+        $today = new Carbon();
             $slots = DB::table('Creneaux')->select('*')->whereNOTIn('IDCreneau',function($query){
                 $query->select('IDCreneau')->from('Consultations');
                 })
+                //->where('DateCreneau','>',$today)
+                ->orderBy('DateCreneau','asc')
                 ->get()->toArray();
             return $slots;
        }
 
        function availableSlotsVeto(int $IDVeto){
+            $today = new Carbon();
             $slots = DB::table('Creneaux')->select('*')->whereNOTIn('IDCreneau',function($query){
-            $query->select('IDCreneau')->from('Consultations');
-            })
-            ->where('IDVeto',$IDVeto)->get()->toArray();
+                $query->select('IDCreneau')->from('Consultations');
+                })
+            ->where('IDVeto',$IDVeto)
+            ->where('DateCreneau','>',$today)
+            ->orderBy('DateCreneau','asc')
+            ->get()->toArray();
             return $slots;
         }
 
-        function getConsultClient(int $IDClient){
+        function getFutureAppointmentsClient(int $IDClient){
+            $today = new Carbon();
             $consult = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
             ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
             ->join('Veterinaires', 'Creneaux.IDVeto', '=', 'Veterinaires.IDVeto')
-            ->where('Animaux.IDClient',$IDClient)->get()->toArray();
+            ->where('Animaux.IDClient',$IDClient)
+            ->where('Creneaux.DateCreneau','>',$today)
+            ->orderBy('Creneaux.DateCreneau','asc')->get()->toArray();
             return $consult;
         }
-        
+
+        function getPastAppointmentsClient(int $IDClient){
+            $today = new Carbon();
+            $consult = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
+            ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
+            ->join('Veterinaires', 'Creneaux.IDVeto', '=', 'Veterinaires.IDVeto')
+            ->where('Animaux.IDClient',$IDClient)
+            ->where('Creneaux.DateCreneau','<',$today)
+            ->orderBy('Creneaux.DateCreneau','desc')->get()->toArray();
+            return $consult;
+        }
+
         function bookedSlotsVeto($IDVeto){
             $slots = DB::table('Creneaux')
             -> JOIN ('Consultations', 'Creneaux.IDCreneau', '=','Consultations.IDCreneau')
             ->JOIN('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
             ->JOIN ('Clients','Animaux.IDClient', '=' ,'Clients.IDClient')
             -> where ('IDVeto', $IDVeto)
-            
-                ->get()->toArray();
+            ->get()->toArray();
             return $slots; 
         }
 
