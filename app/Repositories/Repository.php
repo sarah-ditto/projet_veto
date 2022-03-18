@@ -351,7 +351,7 @@ class Repository{
             $slots = DB::table('Creneaux')->select('*')->whereNOTIn('IDCreneau',function($query){
                 $query->select('IDCreneau')->from('Consultations');
                 })
-                //->where('DateCreneau','>',$today)
+                ->where('DateCreneau','>',$today)
                 ->orderBy('DateCreneau','asc')
                 ->get()->toArray();
             return $slots;
@@ -359,9 +359,10 @@ class Repository{
 
        function availableSlotsVeto(int $IDVeto){
             $today = new Carbon();
-            $slots = DB::table('Creneaux')->select('*')->whereNOTIn('IDCreneau',function($query){
+            $slots = DB::table('Creneaux')->select('*')
+            ->whereNOTIn('IDCreneau',function($query){
                 $query->select('IDCreneau')->from('Consultations');
-                })
+            })
             ->where('IDVeto',$IDVeto)
             ->where('DateCreneau','>',$today)
             ->orderBy('DateCreneau','asc')
@@ -371,7 +372,8 @@ class Repository{
 
         function getFutureAppointmentsClient(int $IDClient){
             $today = new Carbon();
-            $consult = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
+            $consult = DB::table('Animaux')
+            ->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
             ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
             ->join('Veterinaires', 'Creneaux.IDVeto', '=', 'Veterinaires.IDVeto')
             ->where('Animaux.IDClient',$IDClient)
@@ -393,23 +395,25 @@ class Repository{
 
         function bookedSlotsVeto($IDVeto){
             $slots = DB::table('Creneaux')
-            -> JOIN ('Consultations', 'Creneaux.IDCreneau', '=','Consultations.IDCreneau')
-            ->JOIN('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
-            ->JOIN ('Clients','Animaux.IDClient', '=' ,'Clients.IDClient')
-            -> where ('IDVeto', $IDVeto)
+            ->join('Consultations', 'Creneaux.IDCreneau', '=','Consultations.IDCreneau')
+            ->join('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
+            ->join('Clients','Animaux.IDClient', '=' ,'Clients.IDClient')
+            ->where('IDVeto', $IDVeto)
             ->get()->toArray();
             return $slots; 
         }
 
         function listAnimals(int $IDVeto){
-            $animals = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
+            $animals = DB::table('Animaux')
+            ->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
             ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
             ->where('Creneaux.IDVeto',$IDVeto)->select('Animaux.NomAnimal','Animaux.IDAnimal','Animaux.IDClient')->distinct()->get()->toArray();
             return $animals;
         }
 
         function listAnimalsOfClient(int $IDVeto, int $IDClient){
-            $animals = DB::table('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
+            $animals = DB::table('Animaux')
+            ->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
             ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
             ->where('Creneaux.IDVeto',$IDVeto)
             ->where('Animaux.IDClient',$IDClient)
@@ -418,17 +422,19 @@ class Repository{
         }
 
         function listClients(int $IDVeto){
-            $clients = DB::table('Clients')->select('*')->distinct()->whereIn('IDClient',function($query) use ($IDVeto){
+            $clients = DB::table('Clients')->select('*')->distinct()
+            ->whereIn('IDClient',function($query) use ($IDVeto){
                 $query->select('IDClient')->from('Animaux')->join('Consultations', 'Animaux.IDAnimal', '=', 'Consultations.IDAnimal')
                 ->join('Creneaux', 'Consultations.IDCreneau', '=', 'Creneaux.IDCreneau')
                 ->where('Creneaux.IDVeto',$IDVeto);
-                })
-                ->get()->toArray();
+            })
+            ->get()->toArray();
             return $clients;
         }
         
         function isVetofClient(int $IDClient, int $IDVeto){
-            $veto = DB::table('Consultations')->join('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
+            $veto = DB::table('Consultations')
+            ->join('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
             ->join('Creneaux', 'Consultations.IDCreneau', '=','Creneaux.IDCreneau')
             ->where('Creneaux.IDVeto',$IDVeto)
             ->where('Animaux.IDClient',$IDClient)->get()->toArray();
@@ -438,12 +444,34 @@ class Repository{
         }
 
         function isVetofAnimal(int $IDAnimal, int $IDVeto){
-            $veto = DB::table('Consultations')->join('Creneaux', 'Consultations.IDCreneau', '=','Creneaux.IDCreneau')
+            $veto = DB::table('Consultations')
+            ->join('Creneaux', 'Consultations.IDCreneau', '=','Creneaux.IDCreneau')
             ->where('Creneaux.IDVeto',$IDVeto)
             ->where('Consultations.IDAnimal',$IDAnimal)->get()->toArray();
             if (count($veto)!=0)
                 return 1;
             return 0;
 
+        }
+
+        function vetByZipCode(string $cp){
+            $veto = DB::table('Veterinaires')
+            ->join('CodesPostaux', 'Veterinaires.CodePostalVeto', '=','CodesPostaux.CodePostal')
+            ->where('Veterinaires.CodePostalVeto',$cp)
+            ->get()->toArray();
+            return $veto;
+        }
+
+        function availableSlotsZipCode(string $cp){
+            $slots = DB::table('Creneaux')
+            ->join('Veterinaires', 'Creneaux.IDVeto', '=','Veterinaires.IDVeto')
+            ->select('Creneaux.IDCreneau','Creneaux.DateCreneau','Creneaux.IDVeto')
+            ->whereNOTIn('IDCreneau',function($query){
+                $query->select('IDCreneau')->from('Consultations');
+            })
+            ->where('Veterinaires.CodePostalVeto',$cp)
+            ->orderBy('DateCreneau','asc')
+            ->get()->toArray();
+            return $slots;
         }
 }

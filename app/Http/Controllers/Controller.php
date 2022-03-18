@@ -352,6 +352,21 @@ class Controller extends BaseController
         $clients = $this->repository->listClients($request->session()->get('user'));
         $animals = $this->repository->listAnimals($request->session()->get('user'));
         return view ('clients_list', ['clients'=> $clients, 'animals'=>$animals] );
-
     }
+
+    public function searchByZipCode (Request $request){
+        $rules = [
+            'codePostal' => ['regex:/^(([0-8][0-9])|(9[0-5]))[0-9]{3}$/']
+        ];
+        $messages = [
+            'codePostal.regex' => 'Vous devez saisir code postal valide.',
+        ];
+        $validatedData = $request->validate($rules, $messages);
+
+        $vets = $this->repository->vetByZipCode($validatedData['codePostal']);
+        $slots = $this->repository -> availableSlotsZipCode($validatedData['codePostal']);
+        return view ('zip_search_results', ['vetos'=> $vets, 'creneaux'=>$slots] );
+    }
+
+
 }

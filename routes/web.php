@@ -38,4 +38,5 @@ use App\Http\Controllers\profileProController;
     Route::get('/appointments', [Controller::class, 'showClientAppointments'])->name('appointments.show');
     Route::get('/clients_list',[Controller::class, 'showClientsList'])->name('clientsList.show');
     Route::get('/booked_slots', [Controller::class, 'showBookedSlotsList']) -> name ('bookedSlots.show');
+    Route::post('/',[Controller::class, 'searchByZipCode']) -> name ('zipSearchResult');
 
