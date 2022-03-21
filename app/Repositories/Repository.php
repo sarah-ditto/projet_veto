@@ -474,4 +474,25 @@ class Repository{
             ->get()->toArray();
             return $slots;
         }
+
+        function vetByName(string $cp){
+            $veto = DB::table('Veterinaires')
+            ->join('CodesPostaux', 'Veterinaires.CodePostalVeto', '=','CodesPostaux.CodePostal')
+            ->where(DB::raw('lower(Veterinaires.NomVeto)'), strtolower($cp))
+            ->get()->toArray();
+            return $veto;
+        }
+
+        function availableSlotsName(string $cp){
+            $slots = DB::table('Creneaux')
+            ->join('Veterinaires', 'Creneaux.IDVeto', '=','Veterinaires.IDVeto')
+            ->select('Creneaux.IDCreneau','Creneaux.DateCreneau','Creneaux.IDVeto')
+            ->whereNOTIn('IDCreneau',function($query){
+                $query->select('IDCreneau')->from('Consultations');
+            })
+            ->where(DB::raw('lower(Veterinaires.NomVeto)'), strtolower($cp))
+            ->orderBy('DateCreneau','asc')
+            ->get()->toArray();
+            return $slots;
+        }
 }

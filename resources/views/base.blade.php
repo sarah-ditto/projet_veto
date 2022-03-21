@@ -18,7 +18,7 @@
                 user ID :{{session()->get('user')[0]}} userType : {{session()->get('userType')}}
                     
                     <div class="dropdown" overflow="visible">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" 
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
                         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" 
                         aria-expanded="true" href="#"> Menu
                         </button>
@@ -44,7 +44,7 @@
                 </form>
                 @else
                 <div class="dropdown" overflow="visible">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" 
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" 
                     aria-expanded="true" href="#"> Inscription
                     </button>

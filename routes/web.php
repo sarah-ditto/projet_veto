@@ -18,7 +18,7 @@ use App\Http\Controllers\profileProController;
     Route::get('/about', [Controller::class, 'showAbout'])->name('about.show');
     Route::get('/faq', [Controller::class, 'showFaq'])->name('faq.show');
     Route::get('/login', [Controller::class, 'showLogin'])->name('login.show');
-    Route::post('/',[Controller::class, 'login'])->name('login.post');
+    Route::post('/login',[Controller::class, 'login'])->name('login.post');
     Route::post('/logout',[Controller::class, 'logout'])->name('logout');
     Route::get('/client_registration', [Controller::class, 'showClientRegistrationForm'])->name('clientRegistration.show');
     Route::post('/client_registration',[Controller::class, 'storeClient'])->name('clientRegistration.post');
@@ -38,5 +38,6 @@ use App\Http\Controllers\profileProController;
     Route::get('/appointments', [Controller::class, 'showClientAppointments'])->name('appointments.show');
     Route::get('/clients_list',[Controller::class, 'showClientsList'])->name('clientsList.show');
     Route::get('/booked_slots', [Controller::class, 'showBookedSlotsList']) -> name ('bookedSlots.show');
-    Route::post('/',[Controller::class, 'searchByZipCode']) -> name ('zipSearchResult');
+    Route::post('/zip_search_results',[Controller::class, 'searchByZipCode']) -> name ('zipSearchResult');
+    Route::post('/name_search_results',[Controller::class, 'searchByName']) -> name ('nameSearchResult');
 

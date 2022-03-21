@@ -1,9 +1,23 @@
 @extends('base')
 
 @section('title')
+Résultats de la recherche
 @endsection
 
 @section('content')
+@if (count($vetos)==0)
+<div class="page-wrap d-flex flex-row align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center">
+                <span class="display-1 d-block"> &#9785; </span>
+                <div class="my-4 lead">Aucun résultat ne correspond à votre recherche.</div>
+                <a href="{{route('welcome.show')}}" class="btn btn-link">Retourner vers la page d'accueuil</a>
+            </div>
+        </div>
+    </div>
+</div>
+@else
 <div>
     @foreach($vetos as $veto)
         <div class="col-md-10 border-top ">
@@ -13,6 +27,9 @@
           <div> <a href="{{route('vetProfile.show', ['IDVeto'=>$veto->IDVeto])}}"> Docteur {{$veto->PrenomVeto}} {{$veto->NomVeto}}</a> </div>
            <div>Mail :  {{$veto->MailVeto}}  </div>
            <div>Adresse :  {{$veto->NumRueVeto}} {{$veto->NomRueVeto}} {{$veto->CodePostalVeto}} {{$veto->Ville}}</div>
+           @if (count($creneaux)==0)
+           <b>Pas de créneaux disponibles</b>
+           @else
            <div>Créneaux disponibles :  
         <table border="2"> 
                @foreach($creneaux as $creneau)
@@ -26,10 +43,12 @@
                 @endforeach
                </table>
             </div>
+            @endif
             </span> 
         </div>
         <div class="row mt-3">
         </div>
     @endforeach
 </div>
+@endif
 @endsection

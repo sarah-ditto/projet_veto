@@ -71,23 +71,26 @@ class Controller extends BaseController
             'MailClient.unique' => "Cet utilisateur existe déjà.",
             'MdpClient.required' => "Vous devez saisir un mot de passe.",
             'NomClient.required' => 'Vous devez saisir un nom.',
+            'NomClient.regex' => 'Vous devez saisir un nom valide',
             'PrenomClient.required' => 'Vous devez saisir un prénom.',
+            'PrenomClient.regex' => 'Vous devez saisir un prénom valide',
             'TelClient.required' => 'Vous devez saisir un téléphone.',
             'NomRueClient.required' => 'Vous devez saisir un nom de rue.',
             'NumRueClient.required' => 'Vous devez saisir un numéro de rue.',
             'CodePostalClient.required' => 'Vous devez saisir un code postal.',
             'Ville.required' => 'Vous devez saisir une ville.',
+            'Ville.regex' => 'Vous devez saisir un nom de ville valide.'
         ];
         $rules=[
             'MailClient' => ['required', 'email','unique:Clients,MailClient'],
             'MdpClient' => ['required'],
-            'NomClient' => ['required'],
-            'PrenomClient' => ['required'],
+            'NomClient' => ['required','regex:/^[\p{L}-]+$/'],
+            'PrenomClient' => ['required','regex:/^[\p{L}-]+$/'],
             'TelClient' => ['required'],
             'NomRueClient' => ['required'],
             'NumRueClient' => ['required'],
             'CodePostalClient' => ['required'],
-            'Ville' => ['required']
+            'Ville' => ['required','regex:/^[\p{L}-]+$/']
         ];
         $validatedData = $request->validate($rules,$messages);
         try {
@@ -112,24 +115,27 @@ class Controller extends BaseController
             'MailVeto.unique' => "Cet utilisateur existe déjà.",
             'MdpVeto.required' => "Vous devez saisir un mot de passe.",
             'NomVeto.required' => 'Vous devez saisir un nom.',
+            'NomVeto.regex' => 'Vous devez saisir un nom valide',
             'PrenomVeto.required' => 'Vous devez saisir un prénom.',
+            'PrenomVeto.regex' => 'Vous devez saisir un prénom valide',
             'TelVeto.required' => 'Vous devez saisir un téléphone.',
             'NomRueVeto.required' => 'Vous devez saisir un nom de rue.',
             'NumRueVeto.required' => 'Vous devez saisir un numéro de rue.',
             'CodePostalVeto.required' => 'Vous devez saisir un code postal.',
             'Ville.required' => 'Vous devez saisir une ville.',
+            'Ville.regex' => 'Vous devez saisir un nom de ville valide.',
             'PresentationVeto.required' => 'Vous devez vous présentez en quelques lignes.'
         ];
         $rules=[
             'MailVeto' => ['required', 'email','unique:Clients,MailClient'],
             'MdpVeto' => ['required'],
-            'NomVeto' => ['required'],
-            'PrenomVeto' => ['required'],
+            'NomVeto' => ['required','regex:/^[\p{L}-]+$/'],
+            'PrenomVeto' => ['required','regex:/^[\p{L}-]+$/'],
             'TelVeto' => ['required'],
             'NomRueVeto' => ['required'],
             'NumRueVeto' => ['required'],
             'CodePostalVeto' => ['required'],
-            'Ville' => ['required'],
+            'Ville' => ['required','regex:/^[\p{L}-]+$/'],
             'PresentationVeto' => ['required']
         ];
         $validatedData = $request->validate($rules,$messages);
@@ -229,7 +235,7 @@ class Controller extends BaseController
     public function storeAnimal(Request $request){
         $rules = [
             'photoAnimal' => ['image'],
-            'nameAnimal' => ['required'],
+            'nameAnimal' => ['required','regex:/^[\p{L}-]+$/'],
             'dateAnimal' => ['required','date'],
             'typeAnimal'=> ['required','exists:Especes,TypeAnimal'],
             'sexeAnimal' => ['required'],
@@ -240,6 +246,7 @@ class Controller extends BaseController
         $messages = [
             'photoAnimal.image' => 'Votre image doit être du type jpg, jpeg, png, bmp, gif, svg, ou webp.',
             'nameAnimal.required' => 'Vous devez saisir une heure de début.',
+            'nameAnimal.regex' => 'Vous devez saisir un nom valide',
             'dateAnimal.required' => 'Vous devez saisir une date de naissance, même approximative.',
             'dateAnimal.date' => 'Vous devez saisir une date valide.',
             'typeAnimal.required' => 'Vous devez séléctionner un type d\'animal.',
@@ -363,10 +370,30 @@ class Controller extends BaseController
         ];
         $validatedData = $request->validate($rules, $messages);
 
-        $vets = $this->repository->vetByZipCode($validatedData['codePostal']);
-        $slots = $this->repository -> availableSlotsZipCode($validatedData['codePostal']);
-        return view ('zip_search_results', ['vetos'=> $vets, 'creneaux'=>$slots] );
+        try{
+            $vets = $this->repository->vetByZipCode($validatedData['codePostal']);
+            $slots = $this->repository -> availableSlotsZipCode($validatedData['codePostal']); 
+            } catch (Exception $e) {
+                return redirect()->back()->withInput()->withErrors("Recherche impossible");
+            }
+        return view ('search_results', ['vetos'=> $vets, 'creneaux'=>$slots] );
     }
+
+    public function searchByName (Request $request){
+        $rules = [
+            'nom' => ['regex:/^[\p{L}-]+$/']
+        ];
+        $messages = [
+            'nom.regex' => 'Vous devez un nom valide.',
+        ];
+        $validatedData = $request->validate($rules, $messages);
+
+        $vets = $this->repository->vetByName($validatedData['nom']);
+        $slots = $this->repository -> availableSlotsName($validatedData['nom']);
+        return view ('search_results', ['vetos'=> $vets, 'creneaux'=>$slots] );
+    }
+
+    
 
 
 }
