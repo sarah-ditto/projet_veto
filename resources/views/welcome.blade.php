@@ -19,7 +19,7 @@
     </div>
 </form> 
 
-<h4 class="text mt-5">Recherche par code postal nom d'un professionnel</h4>
+<h4 class="text mt-5">Recherche par nom d'un professionnel</h4>
 <form class="form-inline" method="POST" action="{{route('nameSearchResult')}}">
 @csrf
     <div>
