@@ -393,6 +393,13 @@ class Controller extends BaseController
         return view ('search_results', ['vetos'=> $vets, 'creneaux'=>$slots] );
     }
 
+    public function deleteAppointment(Request $request, int $IDConsult){
+        $this->repository->deleteAppointment($IDConsult);
+        return redirect()->back();
+
+
+    }
+
     
 
 

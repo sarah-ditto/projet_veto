@@ -495,4 +495,16 @@ class Repository{
             ->get()->toArray();
             return $slots;
         }
+
+        function deleteAppointment(int $IDConsult){
+            $consult = DB::table('Consultations')
+            ->where('IDConsult', $IDConsult)
+            ->get();
+        if (count($consult)==0)
+            throw new Exception('Consultation inconnue');
+        else
+            DB::table('Consultations')
+            ->where('IDConsult', $IDConsult)
+            ->delete();
+        }
 }

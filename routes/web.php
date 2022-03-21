@@ -40,4 +40,5 @@ use App\Http\Controllers\profileProController;
     Route::get('/booked_slots', [Controller::class, 'showBookedSlotsList']) -> name ('bookedSlots.show');
     Route::post('/zip_search_results',[Controller::class, 'searchByZipCode']) -> name ('zipSearchResult');
     Route::post('/name_search_results',[Controller::class, 'searchByName']) -> name ('nameSearchResult');
+    Route::post('/delete_appointment/{IDConsult}',[Controller::class, 'deleteAppointment']) -> name ('deleteAppointment.post');
 
