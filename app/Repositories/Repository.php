@@ -499,12 +499,16 @@ class Repository{
         function deleteAppointment(int $IDConsult){
             $consult = DB::table('Consultations')
             ->where('IDConsult', $IDConsult)
+            ->join('Creneaux', 'Creneaux.IDCreneau', '=','Consultations.IDCreneau')
             ->get();
-        if (count($consult)==0)
-            throw new Exception('Consultation inconnue');
-        else
-            DB::table('Consultations')
-            ->where('IDConsult', $IDConsult)
-            ->delete();
+            var_dump($consult);
+            if (count($consult)==0)
+                throw new Exception('Consultation inconnue');
+            if ($consult->first()->DateCreneau<Carbon::now())
+                throw new Exception('Consultation passée'); 
+            else
+                DB::table('Consultations')
+                ->where('IDConsult', $IDConsult)
+                ->delete();
         }
 }

@@ -394,10 +394,12 @@ class Controller extends BaseController
     }
 
     public function deleteAppointment(Request $request, int $IDConsult){
-        $this->repository->deleteAppointment($IDConsult);
+        try{
+            $this->repository->deleteAppointment($IDConsult);
+            } catch (Exception $e) {
+                return redirect()->back()->withErrors("Annulation impossible");
+            }
         return redirect()->back();
-
-
     }
 
     

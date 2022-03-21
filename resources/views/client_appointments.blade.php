@@ -14,7 +14,7 @@ Mes rendez-vous
     <div class="col-sm p-2 m-1">
     <form method="POST" action="{{route('deleteAppointment.post', ['IDConsult'=>$consult->IDConsult])}}">
         @csrf
-        <button type="submit" class="btn btn-outline-danger">Supprimer</a>
+        <button type="submit" class="btn btn-outline-danger">Annuler</a>
     </form>
     </div>
     </div>
