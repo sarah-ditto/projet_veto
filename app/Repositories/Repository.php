@@ -169,6 +169,11 @@ class Repository{
         return $animal;
     }
 
+    function consultation($IDConsult){
+        return  
+        DB::table('Consultations')->where('IDConsult',$IDConsult)-> get()->toArray();
+    }
+
    function insertCreneaux(array $Creneaux) :int{
         return array_key_exists("IDCreneau", $Creneaux) ? 
         DB:: table('Creneaux')
@@ -503,14 +508,58 @@ class Repository{
             ->where('IDConsult', $IDConsult)
             ->join('Creneaux', 'Creneaux.IDCreneau', '=','Consultations.IDCreneau')
             ->get();
-            var_dump($consult);
             if (count($consult)==0)
                 throw new Exception('Consultation inconnue');
             if ($consult->first()->DateCreneau<Carbon::now())
                 throw new Exception('Consultation passée'); 
-            else
-                DB::table('Consultations')
-                ->where('IDConsult', $IDConsult)
-                ->delete();
+            DB::table('Consultations')
+            ->where('IDConsult', $IDConsult)
+            ->delete();
+        }
+
+        function getAnimalAppointments(int $IDAnimal){
+            $consult = DB::table('Consultations')
+            ->join('Creneaux', 'Creneaux.IDCreneau', '=','Consultations.IDCreneau')
+            ->join('Veterinaires', 'Creneaux.IDVeto', '=','Veterinaires.IDVeto')
+            ->join('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
+            ->where('Animaux.IDAnimal', $IDAnimal)
+            ->orderBy('DateCreneau','desc')
+            ->get()->toArray();
+            if (count($consult)==0)
+                throw new Exception('Consultation inconnue');
+            return $consult;
+        }
+
+        function getAnimalAppointment(int $IDAnimal, int $IDConsult){
+            $consult = DB::table('Consultations')
+            ->join('Animaux', 'Consultations.IDAnimal', '=','Animaux.IDAnimal')
+            ->where('Animaux.IDAnimal', $IDAnimal)
+            ->where('Consultations.IDConsult', $IDConsult)
+            ->get()->toArray();
+            if (count($consult)==0)
+                throw new Exception('Consultation inconnue');
+            return $consult[0];
+        }
+
+        function updateAppointment(int $IDConsult, $motifConsult, $obsConsult){
+            $consult = DB::table('Consultations')->where('IDConsult',$IDConsult)->get();
+            if (count($consult)==0)
+                throw new Exception('Consultation inconnue');
+            DB::table('Consultations')
+            ->where('IDConsult', $IDConsult)
+            ->update(['MotifConsult' => $motifConsult, 'ObsConsult'=> $obsConsult]);
+        }
+
+        function isAppointmentofVet(int $IDConsult, int $IDVeto){
+            $consult= DB::table('Consultations')
+            ->join('Creneaux', 'Consultations.IDCreneau', '=','Creneaux.IDCreneau')
+            ->where('Creneaux.IDVeto', $IDVeto)
+            ->where('Consultations.IDConsult', $IDConsult)
+            ->get()->toArray();
+            if (count($consult)==0)
+                return 0;
+            return 1;
+
+
         }
 }
