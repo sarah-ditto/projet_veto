@@ -34,7 +34,8 @@ class Controller extends BaseController
         return view('all_vet_profiles', ['vetos'=>$vetos, 'creneaux'=>$creneaux]); 
     }
     
-    public function showWelcome(){
+    public function showWelcome(Request $request){
+        $request->session()->forget('backUrl');
         return view('welcome');
     }
 
@@ -84,13 +85,13 @@ class Controller extends BaseController
         $rules=[
             'MailClient' => ['required', 'email','unique:Clients,MailClient'],
             'MdpClient' => ['required'],
-            'NomClient' => ['required','regex:/^[\p{L}-]+$/'],
-            'PrenomClient' => ['required','regex:/^[\p{L}-]+$/'],
+            'NomClient' => ['required','regex:/^[\p{L}-]+$/u'],
+            'PrenomClient' => ['required','regex:/^[\p{L}-]+$/u'],
             'TelClient' => ['required'],
             'NomRueClient' => ['required'],
             'NumRueClient' => ['required'],
             'CodePostalClient' => ['required'],
-            'Ville' => ['required','regex:/^[\p{L}-]+$/']
+            'Ville' => ['required','regex:/^[\p{L}-]+$/u']
         ];
         $validatedData = $request->validate($rules,$messages);
         try {
@@ -101,7 +102,7 @@ class Controller extends BaseController
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors("L'utilisateur existe déjà.");
             }
-            return redirect()->route('welcome.show');
+            return redirect()->route('login.show');
     }
 
     public function showVetRegistrationForm(){
@@ -129,13 +130,13 @@ class Controller extends BaseController
         $rules=[
             'MailVeto' => ['required', 'email','unique:Clients,MailClient'],
             'MdpVeto' => ['required'],
-            'NomVeto' => ['required','regex:/^[\p{L}-]+$/'],
-            'PrenomVeto' => ['required','regex:/^[\p{L}-]+$/'],
+            'NomVeto' => ['required','regex:/^[\p{L}-]+$/u'],
+            'PrenomVeto' => ['required','regex:/^[\p{L}-]+$/u'],
             'TelVeto' => ['required'],
             'NomRueVeto' => ['required'],
             'NumRueVeto' => ['required'],
             'CodePostalVeto' => ['required'],
-            'Ville' => ['required','regex:/^[\p{L}-]+$/'],
+            'Ville' => ['required','regex:/^[\p{L}-]+$/u'],
             'PresentationVeto' => ['required']
         ];
         $validatedData = $request->validate($rules,$messages);
@@ -147,7 +148,7 @@ class Controller extends BaseController
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors("L'utilisateur existe déjà.");
             }
-            return redirect()->route('welcome.show');
+            return redirect()->route('login.show');
     }
 
     public function login(Request $request, Repository $repository){
@@ -168,12 +169,15 @@ class Controller extends BaseController
         } catch (Exception $e) {
             return redirect()->back()->withInput()->withErrors(['email'=>"Impossible de vous authentifier.".$e->getMessage()]);
         }
-        return redirect()->route('welcome.show');
+        return ($url = $request->session()->get('backUrl')) ?
+                    redirect($url) :
+                    redirect()->route('welcome.show');
     }
 
     public function logout(Request $request) {
         $request->session()->forget('user');
         $request->session()->forget('userType');
+        $request->session()->forget('backUrl');
         return redirect()->route('welcome.show');
     }
 
@@ -235,7 +239,7 @@ class Controller extends BaseController
     public function storeAnimal(Request $request){
         $rules = [
             'photoAnimal' => ['image'],
-            'nameAnimal' => ['required','regex:/^[\p{L}-]+$/'],
+            'nameAnimal' => ['required','regex:/^[\p{L}-]+$/u'],
             'dateAnimal' => ['required','date'],
             'typeAnimal'=> ['required','exists:Especes,TypeAnimal'],
             'sexeAnimal' => ['required'],
@@ -273,14 +277,22 @@ class Controller extends BaseController
         // else
         //     Storage::copy('animals/image.jpg', "animals/$IDAnimal/image.jpg");
 
-        return redirect()->route('welcome.show');
+        return ($url = $request->session()->get('backUrl')) ?
+                    redirect($url) :
+                    redirect()->route('client.show',['IDClient'=>$request->session()->get('user')]);
     }
 
     public function showConfirmSlotForm(Request $request, int $IDCreneau){
-        if (!($request->session()->has('user')))
+        if (!($request->session()->has('user'))){
+            $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            $request->session()->put('backUrl', $url);
             return redirect()->route('login.show');
+        }
+            
         if ($request->session()->get('userType')==1)
             return redirect()->route('welcome.show');
+        $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $request->session()->put('backUrl', $url);
         $creneau = $this->repository->creneau($IDCreneau);
         $animaux = $this->repository->animauxProprio($request->session()->get('user'));
         return view('confirmation',['creneau'=>$creneau,'animaux' => $animaux]);
@@ -328,7 +340,7 @@ class Controller extends BaseController
         } catch (Exception $e) {
             return redirect()->back()->withInput()->withErrors("Impossible de réserver le créneaux");
         }
-        return redirect()->route('welcome.show');
+        return redirect()->route('appointments.show');
     }
 
     public function showClientAppointments(Request $request){
@@ -381,7 +393,7 @@ class Controller extends BaseController
 
     public function searchByName (Request $request){
         $rules = [
-            'nom' => ['regex:/^[\p{L}-]+$/']
+            'nom' => ['regex:/^[\p{L}-]+$/u']
         ];
         $messages = [
             'nom.regex' => 'Vous devez un nom valide.',

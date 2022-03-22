@@ -141,5 +141,6 @@ MotifConsult VARCHAR (30) NOT NULL,
 IDAnimal INTEGER, 
 IDCreneau INTEGER,
 CONSTRAINT fk_Consul_ref_Animaux FOREIGN KEY (IDAnimal) REFERENCES Animaux (IDAnimal),
-CONSTRAINT fk_Consult_ref_Creneaux FOREIGN KEY (IDCreneau) REFERENCES Creneaux (IDCreneau)
+CONSTRAINT fk_Consult_ref_Creneaux FOREIGN KEY (IDCreneau) REFERENCES Creneaux (IDCreneau),
+UNIQUE (IDCreneau)
 );

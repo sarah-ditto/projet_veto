@@ -10,4 +10,5 @@ A propos
     <p>Ecrire une description du site avec ses objectifs</p>
     <p>Parler du cadre dans lequel on fait le projet et de nous</p>
   </div>
-</div>@endsection
+</div>
+@endsection

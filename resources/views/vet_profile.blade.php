@@ -1,10 +1,7 @@
 @extends('base')
 
 @section('title')
-<div class="d-flex flex-column align-items-center text-center ">
-<span class="font-weight-bold" style="font-size: 25px;">Dr {{$veto->PrenomVeto}} {{$veto->NomVeto}}</span>
-<span style="font-size: 18px; margin-left:-150px"> Vétérinaire</span>
-</div>
+Profil du Dr {{$veto->PrenomVeto}} {{$veto->NomVeto}}
 @endsection
 
 @section('content')

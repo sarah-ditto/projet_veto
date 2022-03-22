@@ -470,6 +470,7 @@ class Repository{
                 $query->select('IDCreneau')->from('Consultations');
             })
             ->where('Veterinaires.CodePostalVeto',$cp)
+            ->where('DateCreneau','>',Carbon::now())
             ->orderBy('DateCreneau','asc')
             ->get()->toArray();
             return $slots;
@@ -491,6 +492,7 @@ class Repository{
                 $query->select('IDCreneau')->from('Consultations');
             })
             ->where(DB::raw('lower(Veterinaires.NomVeto)'), strtolower($cp))
+            ->where('DateCreneau','>',Carbon::now())
             ->orderBy('DateCreneau','asc')
             ->get()->toArray();
             return $slots;

@@ -8,10 +8,12 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="resources/css/welcome.css">
+        <style type="text/css"> #welcome{position:relative}#form{position:absolute;top:40%;left:35%;background-color:rgba(229, 229, 229, 0.7);display:block;}</style>
     </head>
     <body class="d-flex flex-column min-vh-100">
         <div class="border-bottom shadow-sm p-3 px-md-4 mb-3 bg-light">
             <div class="container align-items-center d-flex flex-column flex-md-row">
+            <a href={{route('welcome.show')}}><img src="{{URL::asset('images/logo.png')}}" height="50" class="border rounded mr-2" alt="logo"></a>
                 <h5 class="my-0 mr-md-auto font-weight-normal">@yield('title')</h5>
 
                 @if (session()->has('user'))
@@ -34,13 +36,13 @@
                         @else
                             <a class="dropdown-item" href="{{route('appointments.show')}}">Mes rendez-vous</a>
                             <a class="dropdown-item" href="{{route('client.show',['IDClient'=>session()->get('user')])}}">Mes informations</a>
-                            <a class="dropdown-item" href="{{route('createAnimal.show')}}">Entrez un nouveau compagnon</a>
+                            <a class="dropdown-item" href="{{route('createAnimal.show')}}">Ajouter un nouveau compagnon</a>
                         @endif
                         </div>
                     </div>
                 <form method="POST" action="{{route('logout')}}">
                     @csrf
-                    <button type="submit" class="btn btn-outline-primary">Déconnexion</a>
+                    <button type="submit" class="btn btn-outline-info">Déconnexion</a>
                 </form>
                 @else
                 <div class="dropdown" overflow="visible">
@@ -57,7 +59,7 @@
                         <a class="dropdown-item" href="{{route('clientRegistration.show')}}">Inscription Client</a>
                     </div>
                 </div>
-                <a class="btn btn-outline-primary" href="/login">Connexion</a>
+                <a class="btn btn-outline-info" href="/login">Connexion</a>
                 @endif
             </div>
         </div>
