@@ -41,4 +41,6 @@ use App\Http\Controllers\profileProController;
     Route::post('/zip_search_results',[Controller::class, 'searchByZipCode']) -> name ('zipSearchResult');
     Route::post('/name_search_results',[Controller::class, 'searchByName']) -> name ('nameSearchResult');
     Route::post('/delete_appointment/{IDConsult}',[Controller::class, 'deleteAppointment']) -> name ('deleteAppointment.post');
+    Route::get('/client_profile/{IDClient}/{IDAnimal}/update/{IDConsult}', [Controller::class, 'showAppointmentUpdateForm'])-> where('IDClient','[0-9]+') -> where('IDAnimal','[0-9]+')-> where('IDConsult','[0-9]+') ->name('updateAppointment.show');    
+    Route::post('/client_profile/{IDClient}/{IDAnimal}/update/{IDConsult}', [Controller::class, 'storeAppointmentUpdate'])-> where('IDClient','[0-9]+') -> where('IDAnimal','[0-9]+')-> where('IDConsult','[0-9]+') ->name('updateAppointment.post');
 

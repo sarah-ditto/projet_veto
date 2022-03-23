@@ -39,11 +39,13 @@ class Controller extends BaseController
         return view('welcome');
     }
 
-    public function showAbout(){
+    public function showAbout(Request $request){
+        $request->session()->forget('backUrl');
         return view('about');
     }
 
-    public function showFaq(){
+    public function showFaq(Request $request){
+        $request->session()->forget('backUrl');
         return view('faq');
     }
 
@@ -56,14 +58,6 @@ class Controller extends BaseController
     public function showClientRegistrationForm(){
         return view('create_client');
     }
-
-
-
-    // public function showCreneaux(){
-    //     $vetos = $this->repository->veterinaires();
-    //     $creneaux = $this->repository->creneaux();
-    //     return view('creneaux', ['vetos'=>$vetos, 'creneaux'=>$creneaux]);
-    // }
 
     public function storeClient(Request $request){
         $messages=[
@@ -321,7 +315,8 @@ class Controller extends BaseController
         if (($request->session()->get('userType')==1)&&($this->repository->isVetofAnimal($IDAnimal,$request->session()->get('user'))==0))
             return redirect()->route('welcome.show');
         $animal = $this->repository->animal($IDAnimal);
-        return view('animal_profil', ['animal'=>$animal]); 
+        $consultations = $this->repository->getAnimalAppointments($IDAnimal);
+        return view('animal_profil', ['animal'=>$animal,'consults'=>$consultations]); 
     }
 
     function storeSlotConfirmation(Request $request, int $IDCreneau){
@@ -413,6 +408,37 @@ class Controller extends BaseController
             }
         return redirect()->back();
     }
+
+    public function showAppointmentUpdateForm(Request $request,int $IDClient, int $IDAnimal, int $IDConsult){
+        if (!($request->session()->has('user')))
+            return redirect()->route('login.show');
+        if ($request->session()->get('userType')==2)
+            return redirect()->route('welcome.show');
+        if (($request->session()->get('userType')==1)&&($this->repository->isAppointmentofVet($IDConsult,$request->session()->get('user'))==0))
+            return redirect()->route('welcome.show');
+        $consult= $this->repository->getAnimalAppointment($IDAnimal, $IDConsult);
+        return view('update_appointment',['consult'=>$consult]);
+    }
+
+    public function storeAppointmentUpdate(Request $request,int $IDClient, int $IDAnimal,int $IDConsult){
+        $rules = [
+            'motifConsult' => ['string','nullable'],
+            'obsConsult' => ['string','nullable']
+        ];
+        $messages = [
+            'motifConsult.string' => ['Votre motif doit être valide.'],
+            'obsConsult.string' => ['Vos observations doivent être valides.']
+        ];
+        $validatedData = $request->validate($rules, $messages);
+        try{
+            $this->repository->updateAppointment($IDConsult, $validatedData['motifConsult'],$validatedData['obsConsult']);
+            } catch (Exception $e) {
+                return redirect()->back()->withErrors("Modification impossible");
+            }
+        return redirect()->route('animal.show',['IDClient'=>$IDClient,'IDAnimal'=>$IDAnimal]);
+    }
+
+
 
     
 
