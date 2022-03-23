@@ -100,14 +100,14 @@ CONSTRAINT pk_HorairesVeto PRIMARY KEY (DateDebutAM, DateFinAM, DateDebutPM, Dat
 CONSTRAINT fk_Veto FOREIGN KEY (MailVeto) REFERENCES Veterinaires (MailVeto),
 CONSTRAINT Check_Veto CHECK((DateDebutAM > CURRENT_DATE) AND (DateDebutPM < DateFinPM))
 ); 
-
+*/
 CREATE TABLE PriseEnCharge(
 EspeceAnimal VARCHAR(30), 
-MailVeto VARCHAR(50),
-CONSTRAINT pk_PriseEnCharge PRIMARY KEY (EspeceAnimal, MailVeto),
-CONSTRAINT fk_PriseEnCharge1 FOREIGN KEY (EspeceAnimal) REFERENCES Especes (EspeceAnimal),
-CONSTRAINT fk_PriseEnCharge2 FOREIGN KEY (MailVeto) REFERENCES Veterinaires (MailVeto)
-); */
+IDVeto INTEGER ,
+CONSTRAINT pk_PriseEnCharge PRIMARY KEY (EspeceAnimal, IDVeto),
+CONSTRAINT fk_PriseEnCharge1 FOREIGN KEY (EspeceAnimal) REFERENCES Especes (TypeAnimal),
+CONSTRAINT fk_PriseEnCharge2 FOREIGN KEY (IDVeto) REFERENCES Veterinaires (IDVeto)
+); 
 
 CREATE TABLE Animaux(
 IDAnimal INTEGER PRIMARY KEY AUTOINCREMENT, 

@@ -212,7 +212,7 @@ class Repository{
         return  
         DB:: table('PriseEnCharge')
             ->insertGetId(['EspeceAnimal' => $PriseEnCharge ['EspeceAnimal'],
-                           'MailVeto'  => $PriseEnCharge ['MailVeto' ],
+                           'IDVeto'  => $PriseEnCharge ['IDVeto' ],
             ])
         ;
     }
@@ -288,7 +288,7 @@ class Repository{
         }
 
         function addVet(string $mail, string $mdp, string $nom, string $prenom, string $tel,
-        string $nomRue, int $numRue, string $cp, string $ville, string $presentation): int
+        string $nomRue, int $numRue, string $cp, string $ville, string $presentation, ): int
         {
             $user = DB::table('Veterinaires')->where('MailVeto', $mail)->get()->toArray();
             if (count($user)!=0)
@@ -308,6 +308,8 @@ class Repository{
                                 'NomRueVeto' => $nomRue,
                                 'PresentationVeto' =>$presentation,
                                 'CodePostalVeto' =>$cp]);
+
+            
         }
 
         function getUser(string $email, string $password): array

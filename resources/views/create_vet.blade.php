@@ -113,14 +113,14 @@ Inscription Vétérinaire
 
     <div class="form-group">
       <label for="PresentationVeto">Animaux que vous prenez en charge : </label><br>
-      <input type="checkbox" id="APEC_Chat" name="chat" value="Chat">
-        <label for="APEC_Chat"> Chat</label><br>
-        <input type="checkbox" id="APEC_Chien" name="chien" value="Chien">
-        <label for="APEC_Chien"> Chien</label><br>
-        <input type="checkbox" id="APEC_NAC" name="nac" value="NAC">
-        <label for="APEC_NAC"> NAC</label><br>
-        <input type="checkbox" id="APEC_animal_rural" name="animal_rural" value="Animal Rural">
-        <label for="APEC_animal_rural"> Animal Rural</label><br>
+      <input type="checkbox" id="chat" name="chat" value="CHAT">
+        <label for="chat">Chat</label><br>
+        <input type="checkbox" id="chien" name="chien" value="CHIEN">
+        <label for="chien">Chien</label><br>
+        <input type="checkbox" id="nac" name="nac" value="NAC">
+        <label for="nac">NAC</label><br>
+        <input type="checkbox" id="animal_rural" name="animal_rural" value="RURAL">
+        <label for="animal_rural">Animal Rural</label><br>
     </div>
 
     <div class="form-group">
@@ -135,4 +135,6 @@ Inscription Vétérinaire
     </div>
     <button type="submit" class="btn btn-primary">S'inscrire</button>
 </form>
+
+
 @endsection
