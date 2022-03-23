@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 
 class Controller extends BaseController
@@ -119,7 +121,12 @@ class Controller extends BaseController
             'CodePostalVeto.required' => 'Vous devez saisir un code postal.',
             'Ville.required' => 'Vous devez saisir une ville.',
             'Ville.regex' => 'Vous devez saisir un nom de ville valide.',
-            'PresentationVeto.required' => 'Vous devez vous présentez en quelques lignes.'
+            'PresentationVeto.required' => 'Vous devez vous présentez en quelques lignes.',
+            'chat' => 'Cochez si vous prenez en charge les chats',
+            'chien' => 'Cochez si vous prenez en charge les chiens',
+            'nac' => 'Cochez si vous prenez en charge les nac',
+            'animal_rural' => 'Cochez si vous prenez en charge les animaux ruraux'
+
         ];
         $rules=[
             'MailVeto' => ['required', 'email','unique:Clients,MailClient'],
@@ -131,18 +138,32 @@ class Controller extends BaseController
             'NumRueVeto' => ['required'],
             'CodePostalVeto' => ['required'],
             'Ville' => ['required','regex:/^[\p{L}-]+$/u'],
-            'PresentationVeto' => ['required']
+            'PresentationVeto' => ['required'],
+            'chat' =>  ['nullable'],
+            'chien' =>  ['nullable'],
+            'nac' =>  ['nullable'],
+            'animal_rural' =>  ['nullable'],
         ];
         $validatedData = $request->validate($rules,$messages);
         try {
-            $this->repository->addVet($validatedData['MailVeto'],$validatedData['MdpVeto'],
+            $idVeto = $this->repository->addVet($validatedData['MailVeto'],$validatedData['MdpVeto'],
             $validatedData['NomVeto'],$validatedData['PrenomVeto'],$validatedData['TelVeto'],
             $validatedData['NomRueVeto'],$validatedData['NumRueVeto'],$validatedData['CodePostalVeto'],
             $validatedData['Ville'],$validatedData['PresentationVeto']);
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors("L'utilisateur existe déjà.");
             }
-            return redirect()->route('login.show');
+
+        if(array_key_exists('chat', $validatedData))
+            $this->repository->insertPriseEnCharge(['EspeceAnimal'=>$validatedData['chat'],'IDVeto' => $idVeto]);
+        if(array_key_exists('chien', $validatedData))
+            $this->repository->insertPriseEnCharge(['EspeceAnimal'=>$validatedData['chien'],'IDVeto' => $idVeto]);
+        if(array_key_exists('nac', $validatedData))
+            $this->repository->insertPriseEnCharge(['EspeceAnimal'=>$validatedData['nac'],'IDVeto' => $idVeto]);
+        if(array_key_exists('animal_rural', $validatedData))
+            $this->repository->insertPriseEnCharge(['EspeceAnimal'=>$validatedData['animal_rural'],'IDVeto' => $idVeto]);
+
+        return redirect()->route('login.show');
     }
 
     public function login(Request $request, Repository $repository){

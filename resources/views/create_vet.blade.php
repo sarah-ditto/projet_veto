@@ -112,6 +112,18 @@ Inscription Vétérinaire
     </div>
 
     <div class="form-group">
+      <label for="PresentationVeto">Animaux que vous prenez en charge : </label><br>
+      <input type="checkbox" id="chat" name="chat" value="CHAT">
+        <label for="chat">Chat</label><br>
+        <input type="checkbox" id="chien" name="chien" value="CHIEN">
+        <label for="chien">Chien</label><br>
+        <input type="checkbox" id="nac" name="nac" value="NAC">
+        <label for="nac">NAC</label><br>
+        <input type="checkbox" id="animal_rural" name="animal_rural" value="RURAL">
+        <label for="animal_rural">Animal Rural</label><br>
+    </div>
+
+    <div class="form-group">
       <label for="MdpVeto">Mot de passe</label>
       <input type="password" id="MdpVeto" name="MdpVeto" value="{{old('MdpVeto')}}"
              aria-describedby="MdpVeto_feedback" class="form-control @error('MdpVeto') is-invalid @enderror">  
@@ -123,4 +135,6 @@ Inscription Vétérinaire
     </div>
     <button type="submit" class="btn btn-primary">S'inscrire</button>
 </form>
+
+
 @endsection
