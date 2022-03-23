@@ -112,6 +112,18 @@ Inscription Vétérinaire
     </div>
 
     <div class="form-group">
+      <label for="PresentationVeto">Animaux que vous prenez en charge : </label><br>
+      <input type="checkbox" id="APEC_Chat" name="chat" value="Chat">
+        <label for="APEC_Chat"> Chat</label><br>
+        <input type="checkbox" id="APEC_Chien" name="chien" value="Chien">
+        <label for="APEC_Chien"> Chien</label><br>
+        <input type="checkbox" id="APEC_NAC" name="nac" value="NAC">
+        <label for="APEC_NAC"> NAC</label><br>
+        <input type="checkbox" id="APEC_animal_rural" name="animal_rural" value="Animal Rural">
+        <label for="APEC_animal_rural"> Animal Rural</label><br>
+    </div>
+
+    <div class="form-group">
       <label for="MdpVeto">Mot de passe</label>
       <input type="password" id="MdpVeto" name="MdpVeto" value="{{old('MdpVeto')}}"
              aria-describedby="MdpVeto_feedback" class="form-control @error('MdpVeto') is-invalid @enderror">  

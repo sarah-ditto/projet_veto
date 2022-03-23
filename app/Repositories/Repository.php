@@ -289,6 +289,7 @@ class Repository{
             if (count($user)!=0)
                 throw new Exception('Utilisateur inconnu');
             $mdpHash =  Hash::make($mdp);
+            
             $loc = DB::table('CodesPostaux')->where('CodePostal', $cp)
             ->where('Ville',$ville)->get()->toArray();
             if (count($loc)==0)
