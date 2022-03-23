@@ -215,7 +215,7 @@ class Controller extends BaseController
         $end = "$date $endTime";
         try {
             $slots = $this->repository->createSlots($start, $end, $validatedData['duration']);
-            $this->repository->insertCreatedSlots($slots,$request->session()->get('user'));
+            $this->repository->insertCreatedSlots($slots,$validatedData['duration'],$request->session()->get('user'));
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors(['startDate'=>"Impossible de créer vos créneaux.".$e->getMessage()]);
             }

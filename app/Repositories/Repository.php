@@ -178,13 +178,15 @@ class Repository{
         return array_key_exists("IDCreneau", $Creneaux) ? 
         DB:: table('Creneaux')
         ->insertGetId([ 'IDCreneau' => $Creneaux ['IDCreneau'],
-                        'DateCreneau' => $Creneaux ['DateCreneau'], 
+                        'DateCreneau' => $Creneaux ['DateCreneau'],
+                        'DureeCreneau' => $Creneaux ['DureeCreneau'],
                         'IDVeto'=> $Creneaux ['IDVeto'], 
         ])
 
         : DB::table('Creneaux')
         ->insertGetId(['DateCreneau' => $Creneaux ['DateCreneau'], 
-                    'IDVeto'=> $Creneaux ['IDVeto'], 
+                    'IDVeto'=> $Creneaux ['IDVeto'],
+                    'DureeCreneau' => $Creneaux ['DureeCreneau'] 
         ]);
    }
 
@@ -337,18 +339,30 @@ class Repository{
                 while($date < Carbon::parse($fin)->subMinutes($temps)){
                     $newDateTime = Carbon::parse($date)->addMinutes($temps);
                     $date =  $newDateTime;
-                    array_push($tab_date, $date);
+                    array_push($tab_date,$date);
                 }
     
                 return $tab_date;
         }
     
        // Insère la liste de créneaux générés pour un véto dans la table Créneaux
-       function insertCreatedSlots(array $tab_date, $IDVeto): void{
-            foreach($tab_date as $date){
-                $this->insertCreneaux(['IDVeto'=>$IDVeto,'DateCreneau'=>$date]);
+       function insertCreatedSlots(array $tab_date, $duration, $IDVeto): void{
+            $existingSlots = $this->vetSlots($IDVeto);
+            foreach ($existingSlots as $existingSlot){
+                $startdate = $existingSlot->DateCreneau;
+                $enddate = Carbon::parse($startdate)->addMinutes($existingSlot->DureeCreneau);
+                foreach ($tab_date as $date){
+                    if (Carbon::parse($date)->gte(Carbon::parse($startdate)) && Carbon::parse($date)->lt(Carbon::parse($enddate)))
+                        throw new Exception('Dates incompatibles avec les créneaux déjà exisants.');
+                }
             }
-    
+            foreach($tab_date as $date){
+                $this->insertCreneaux(['IDVeto'=>$IDVeto,'DateCreneau'=>$date,'DureeCreneau'=>$duration]);
+            }
+       }
+
+       function vetSlots(int $IDVeto){
+           return DB::table('Creneaux')->where('IDVeto',$IDVeto)->get()->toArray();
        }
 
        function availableSlots(){
