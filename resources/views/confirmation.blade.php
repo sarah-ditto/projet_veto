@@ -5,7 +5,8 @@ Confirmation du RDV
 @endsection
 @section('content')
 <p> Vous allez confirmer la prise d'un rendez-vous le <b> {{$creneau->DateCreneau}} </b> avec
-    le Dr <b> {{$creneau->NomVeto}} </b>.
+    le <b> Dr {{$creneau->PrenomVeto}} {{$creneau->NomVeto}} </b> au <b> {{$creneau->NumRueVeto}} {{$creneau->NomRueVeto}}
+    {{$creneau->CodePostalVeto}} {{$creneau->Ville}}</b> .
 <form method="POST" action="{{route('confirmSlot.post',['IDCreneau'=>$creneau->IDCreneau])}}" >
     @csrf
     @if ($errors->any())
@@ -24,7 +25,7 @@ Confirmation du RDV
     </div>
     @endif
     <div class="form-group">
-      <label for="animal">Séléctionnez l'animal pour lequel le RDV est pris</label>
+      <label for="animal">Séléctionnez l'animal pour lequel le RDV est pris :</label>
       <select id="animal" name="animal"
        aria-describedby="animal_feedback" class="form-control @error('animal') is-invalid @enderror"
        required>

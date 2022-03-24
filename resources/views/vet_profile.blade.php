@@ -5,57 +5,63 @@ Profil du Dr {{$veto->PrenomVeto}} {{$veto->NomVeto}}
 @endsection
 
 @section('content')
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
-
-
-
-
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
-
-        <div class="col-md-4 border-right">
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                <img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                <span class="font-weight-bold"> Dr {{$veto->PrenomVeto}} {{$veto->NomVeto}}</span>
-                <span class="text-black-60"> <i class="material-icons" style="font-size:20px;  vertical-align: middle; margin-top: -.240ex;">mail_outline</i> {{ $veto->MailVeto}}</span>
-            </div>
+        <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+            <span class="font-weight-bold">Dr {{$veto->PrenomVeto}} {{$veto->NomVeto}}</span>
+            @if (session()->get('user')==$veto->IDVeto)
+           <span class="text-black-50">{{$veto->MailVeto}}</span>
+            @endif
+            <span></span></div> 
         </div>
-
         <div class="col-md-5 border-right">
-            <div class="p-3 py-5" >
-                <div class="d-flex justify-content-between align-items-center mb-3"></div>
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Informations</h4>
+                </div>
+                <div class="row mt-3">
+                <span class="material-icons mr-2">place</span>{{$veto->NumRueVeto}} {{$veto->NomRueVeto}} {{$veto->CodePostalVeto}} {{$veto->Ville}}
+                </div>
+                <div class="row mt-3">
+                    <span class="material-icons mr-2">phone</span>{{$veto->TelVeto}}
+                </div>
+                <div class="row mt-3">
+                    <span class="material-icons mr-2">comment</span> <b>A propos : </b>
+                </div>
                 <div class="row mt-2">
-                    <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-bottom:-15px; margin-right: 10px">location_city </i> {{$veto->NumRueVeto}} {{$veto->NomRueVeto}}</label></div>
-                    <div class="col-md-6"><label class="labels" style="margin-left:42px">{{$veto->CodePostalVeto}} {{$veto->Ville}} </label></div>
+                    {{$veto->PresentationVeto}}
                 </div>
                 
                 <div class="row mt-3">
-                    <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-right: 15px"> local_phone</i>N° {{$veto->TelVeto}}</label></div>
-                    <!-- <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-right: 15px"> train</i> Moyen de transport ...</label></div> -->
-                   
+                    <span class="material-icons mr-2">pets</span><b>Type(s) d'animaux pris en charge : </b>
                 </div>
-
-                <div class="row mt-3">
-                    <!-- <div class="col-md-12"><label class="labels">Info pratique</label></div> -->
-                    <div class="col-md-12"><label class="labels">Présentation : {{$veto->PresentationVeto}}  </label></div>
-        
+                <div class="row mt-2">
+                    <ul>
+                        @foreach ($pecs as $pec)
+                            <li>{{$pec->EspeceAnimal}}</li>
+                        @endforeach
+                    </ul>
                 </div>
-               
+                
             </div>
-            <div>Créneaux disponibles :  
-               <table border="2"> 
-               @foreach($creneaux as $creneau)
-                    <tr>
-                        <td class="col-md-10 border-top "><a href="{{route('confirmSlot.show', ['IDCreneau'=>$creneau->IDCreneau])}}"> {{$creneau->DateCreneau}} </a></td>
-                    </tr>
-                @endforeach
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Disponibilités</h4>
+                </div>
+                <table class="table table-striped"> 
+                    @foreach($creneaux as $creneau)
+                        <tr>
+                            <td style="text-align: center; vertical-align: middle;"><a href="{{route('confirmSlot.show', ['IDCreneau'=>$creneau->IDCreneau])}}"> {{$creneau->DateCreneau}} </a></td>
+                        </tr>
+                    @endforeach
                </table>
             </div>
         </div>
-        
     </div>
 </div>
-
-
+</div>
+</div>
 @endsection

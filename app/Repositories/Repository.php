@@ -75,7 +75,8 @@ class Repository{
 
     function creneau(int $IDCreneau){
         $creneau = DB::table('Creneaux')->where('IDCreneau',$IDCreneau)
-        ->join('Veterinaires', 'Creneaux.IDVeto', '=', 'Veterinaires.IDVeto')->get()->toArray();
+        ->join('Veterinaires', 'Creneaux.IDVeto', '=', 'Veterinaires.IDVeto')
+        ->join('CodesPostaux', 'CodesPostaux.CodePostal', '=', 'Veterinaires.CodePostalVeto')->get()->toArray();
         if (count($creneau)==0)
             throw new Exception('Creneau inconnu');
         return $creneau[0];
@@ -115,7 +116,9 @@ class Repository{
 
     function client(int $clientId): array{
         //get et toArray renvoie des tableaux de tableaux
-        $client=DB::table('Clients')->where('IDClient', $clientId)->get()->toArray();
+        $client=DB::table('Clients')
+        ->join('CodesPostaux','Clients.CodePostalClient','=','CodesPostaux.CodePostal')
+        ->where('IDClient', $clientId)->get()->toArray();
         if(empty($client))
             throw new Exception("Client inconnu");
         return $client;
@@ -580,7 +583,19 @@ class Repository{
             if (count($consult)==0)
                 return 0;
             return 1;
+        }
 
+        function isVetofType(int $IDAnimal, int $IDVeto){
+            $veto = DB::table('PriseEnCharge')
+            ->join('Animaux', 'PriseEnCharge.EspeceAnimal', '=','Animaux.TypeAnimal')
+            ->where('PriseEnCharge.IDVeto',$IDVeto)
+            ->where('Animaux.IDAnimal',$IDAnimal)
+            ->get()->toArray();
+            if (count($veto)==0)
+                throw new Exception('Type non pris en charge.');
+        }
 
+        function getVetPriseEnCharge(int $IDVeto){
+            return DB::table('PriseEnCharge')->where('IDVeto',$IDVeto)->get()->toArray();
         }
 }

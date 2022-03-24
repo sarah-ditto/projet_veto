@@ -26,8 +26,8 @@ class Controller extends BaseController
     public function showVetProfile($IDVeto){
         $veto = $this->repository->veterinaire($IDVeto);
         $creneaux = $this->repository->availableSlotsVeto($IDVeto);
-        
-        return view('vet_profile', ['veto'=>$veto,'creneaux'=>$creneaux]); 
+        $pecs = $this->repository->getVetPriseEnCharge($IDVeto);
+        return view('vet_profile', ['veto'=>$veto,'creneaux'=>$creneaux, 'creneaux'=>$creneaux, 'pecs'=>$pecs]); 
     }
 
     public function showAllVetProfiles(){
@@ -349,13 +349,21 @@ class Controller extends BaseController
         $messages = ['animal.exists' => 'Vous devez choisir un animal existant.'];
         $validatedData = $request->validate($rules,$messages);
         try{
+            $IDVeto = $this->repository->creneau($IDCreneau)->IDVeto;
+            $this->repository->isVetofType($validatedData['animal'],$IDVeto);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors("Type non pris en charge.");
+        }
+        try{
             $this->repository->insertConsultation(['ObsConsult' => " ", 
             'MotifConsult'  => " ",
             'IDAnimal'  => $validatedData['animal'],
             'IDCreneau'  => $IDCreneau]);
         } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors("Impossible de réserver le créneaux");
+            return redirect()->back()->withInput()->withErrors("Le créneaux a déjà été réservé.");
         }
+
+        
         return redirect()->route('appointments.show');
     }
 
