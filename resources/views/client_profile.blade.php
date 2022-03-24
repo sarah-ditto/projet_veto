@@ -12,32 +12,32 @@ Profil et compagnons
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="text-right">Informations</h4>
                 </div>
-                <div class="row mt-2">
-                    <div class="col-md-6"><label class="labels"><b>Prenom</b></label> {{$client->PrenomClient}}<br></div>
-                    <div class="col-md-6"><label class="labels"><b>Nom</b></label> {{$client->NomClient}} <br></div>
+                <div class="row mt-3">
+                <span class="material-icons mr-2">person</span>{{$client->PrenomClient}} {{$client->NomClient}}
                 </div>
                 <div class="row mt-3">
-                <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom"> local_phone</i>N° {{$client->TelClient}}<br></div>
-                <div class="col-md-12"><label class="labels"> <i class="material-icons" style="font-size:30px;  vertical-align: bottom; margin-top: -.240ex; margin-bottom:-15px; margin-right: 10px"> location_city </i></label> {{$client->NumRueClient}} {{$client->NomRueClient}}</div>
-                <div class="col-md-12"><label class="labels" style="margin-left:42px"> {{$client->CodePostalClient}}</div>
-                    <div class="col-md-12"><label class="labels"><b>Email</b></label> {{$client->MailClient}}<br></div>
+                <span class="material-icons mr-2">cottage</span>{{$client->NumRueClient}} {{$client->NomRueClient}} {{$client->CodePostalClient}} {{$client->Ville}}
                 </div>
+                <div class="row mt-3">
+                    <span class="material-icons mr-2">phone</span>{{$client->TelClient}}
+                </div>
+                <div class="row mt-3">
+                    <span class="material-icons mr-2">mail</span>{{$client->MailClient}}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Compagnons</h4>
+                </div>
+                    @foreach($animaux as $animal)
+                    <div class="mt-3"><span class="material-icons mr-2">pets</span><a href="{{route('animal.show', ['IDAnimal'=>$animal->IDAnimal, 'IDClient'=>$animal->IDClient ])}}"> {{$animal->NomAnimal}}</a></div>
+                    @endforeach
+            </div>
         </div>
     </div>
-    
-        <h4 class="text-right">Compagnons</h4>
-                <table>
-                    @foreach($animaux as $animal)
-                <tr>
-                    <td><a href="{{route('animal.show', ['IDAnimal'=>$animal->IDAnimal, 'IDClient'=>$animal->IDClient ])}}"> {{$animal->NomAnimal}}</a></td>
-                </tr>
-                    @endforeach
-                </table> 
 </div>
 </div>
 </div>
-
-
-
-
 @endsection
