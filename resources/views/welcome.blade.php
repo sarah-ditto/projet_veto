@@ -12,6 +12,21 @@ Consultations pour Compagnons Instantanées
 <div class="d-flex justify-content-center">
 <form class="form-inline" method="POST" action="{{route('zipSearchResult')}}">
 @csrf
+
+<div>
+    <select name="categorie_animal1" id="categorie_animal1" aria-describedby="categorie_animal1_feedback" class="form-control @error('categorie_animal1') is-invalid @enderror" >
+    <option value="">Sélectionnez la catégorie de votre animal :</option>
+    <option value="CHAT">Chat</option>
+    <option value="CHIEN">Chien</option>
+    <option value="NAC">NAC</option>
+    <option value="RURAL">Animal Rural</option>
+    </select>
+      @error('categorie_animal1')
+      <div id="categorie_animal1_feedback" class="invalid-feedback">
+        {{ $message }}
+      </div>
+      @enderror
+  </div>
     <div>
       <input type="text" id="codePostal" name="codePostal" placeholder="Code postal" value="{{old('codePostal')}}"
              aria-describedby="codePostal_feedback" class="form-control @error('codePostal') is-invalid @enderror"> 
@@ -22,6 +37,7 @@ Consultations pour Compagnons Instantanées
       </div>
       @enderror
     </div>
+
 </form>
 </div> 
 
@@ -29,6 +45,20 @@ Consultations pour Compagnons Instantanées
 <div class="d-flex justify-content-center">
 <form class="form-inline" method="POST" action="{{route('nameSearchResult')}}">
 @csrf
+<div>
+    <select name="categorie_animal2" id="categorie_animal2" aria-describedby="categorie_animal2_feedback" class="form-control @error('categorie_animal2') is-invalid @enderror">
+    <option value="">Sélectionnez la catégorie de votre animal :</option>
+    <option value="CHAT">Chat</option>
+    <option value="CHIEN">Chien</option>
+    <option value="NAC">NAC</option>
+    <option value="RURAL">Animal Rural</option>
+    </select>
+      @error('categorie_animal2')
+      <div id="categorie_animal2_feedback" class="invalid-feedback">
+        {{ $message }}
+      </div>
+      @enderror
+</div>
     <div>
       <input type="text" id="nom" name="nom" placeholder="Nom" value="{{old('nom')}}"
              aria-describedby="nom_feedback" class="form-control @error('nom') is-invalid @enderror"> 
@@ -43,3 +73,5 @@ Consultations pour Compagnons Instantanées
 </div>
 </div>
 @endsection
+
+

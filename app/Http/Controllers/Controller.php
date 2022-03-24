@@ -122,10 +122,10 @@ class Controller extends BaseController
             'Ville.required' => 'Vous devez saisir une ville.',
             'Ville.regex' => 'Vous devez saisir un nom de ville valide.',
             'PresentationVeto.required' => 'Vous devez vous présentez en quelques lignes.',
-            'chat' => 'Cochez si vous prenez en charge les chats',
-            'chien' => 'Cochez si vous prenez en charge les chiens',
-            'nac' => 'Cochez si vous prenez en charge les nac',
-            'animal_rural' => 'Cochez si vous prenez en charge les animaux ruraux'
+            'chat.required_without_all' => 'Vous devez cocher au moins une case',
+            'chien.required_without_all' => 'Vous devez cocher au moins une case',
+            'nac.required_without_all' => 'Vous devez cocher au moins une case',
+            'animal_rural.required_without_all' => 'Vous devez cocher au moins une case'
 
         ];
         $rules=[
@@ -139,10 +139,10 @@ class Controller extends BaseController
             'CodePostalVeto' => ['required'],
             'Ville' => ['required','regex:/^[\p{L}-]+$/u'],
             'PresentationVeto' => ['required'],
-            'chat' =>  ['nullable'],
-            'chien' =>  ['nullable'],
-            'nac' =>  ['nullable'],
-            'animal_rural' =>  ['nullable'],
+            'chat' =>  ['required_without_all:chien,nac,animal_rural'],
+            'chien' =>  ['required_without_all:chat,nac,animal_rural'],
+            'nac' =>  ['required_without_all:chat,chien,animal_rural'],
+            'animal_rural' =>  ['required_without_all:chat,chien,nac'],
         ];
         $validatedData = $request->validate($rules,$messages);
         try {
@@ -399,15 +399,17 @@ class Controller extends BaseController
 
     public function searchByZipCode (Request $request){
         $rules = [
-            'codePostal' => ['regex:/^(([0-8][0-9])|(9[0-5]))[0-9]{3}$/']
+            'codePostal' => ['regex:/^(([0-8][0-9])|(9[0-5]))[0-9]{3}$/'],
+            'categorie_animal1'=> ['required']
         ];
         $messages = [
             'codePostal.regex' => 'Vous devez saisir code postal valide.',
+            'categorie_animal1.required' => 'Vous devez renseigner la catégorie de votre animal'
         ];
         $validatedData = $request->validate($rules, $messages);
 
         try{
-            $vets = $this->repository->vetByZipCode($validatedData['codePostal']);
+            $vets = $this->repository->vetByZipCode($validatedData['codePostal'],$validatedData['categorie_animal1']);
             $slots = $this->repository -> availableSlotsZipCode($validatedData['codePostal']); 
             } catch (Exception $e) {
                 return redirect()->back()->withInput()->withErrors("Recherche impossible");
@@ -417,14 +419,16 @@ class Controller extends BaseController
 
     public function searchByName (Request $request){
         $rules = [
-            'nom' => ['regex:/^[\p{L}-]+$/u']
+            'nom' => ['regex:/^[\p{L}-]+$/u'],
+            'categorie_animal2'=> ['required']
         ];
         $messages = [
             'nom.regex' => 'Vous devez un nom valide.',
+            'categorie_animal2.required' => 'Vous devez renseigner la catégorie de votre animal'
         ];
         $validatedData = $request->validate($rules, $messages);
 
-        $vets = $this->repository->vetByName($validatedData['nom']);
+        $vets = $this->repository->vetByName($validatedData['nom'],$validatedData['categorie_animal2']);
         $slots = $this->repository -> availableSlotsName($validatedData['nom']);
         return view ('search_results', ['vetos'=> $vets, 'creneaux'=>$slots] );
     }
