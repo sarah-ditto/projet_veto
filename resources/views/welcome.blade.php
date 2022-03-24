@@ -15,7 +15,7 @@ Consultations pour Compagnons Instantanées
 
 <div>
     <select name="categorie_animal1" id="categorie_animal1" aria-describedby="categorie_animal1_feedback" class="form-control @error('categorie_animal1') is-invalid @enderror" >
-    <option value="">Sélectionnez la catégorie de votre animal :</option>
+    <option value="">Sélectionnez la catégorie de votre animal</option>
     <option value="CHAT">Chat</option>
     <option value="CHIEN">Chien</option>
     <option value="NAC">NAC</option>
@@ -47,7 +47,7 @@ Consultations pour Compagnons Instantanées
 @csrf
 <div>
     <select name="categorie_animal2" id="categorie_animal2" aria-describedby="categorie_animal2_feedback" class="form-control @error('categorie_animal2') is-invalid @enderror">
-    <option value="">Sélectionnez la catégorie de votre animal :</option>
+    <option value="">Sélectionnez la catégorie de votre animal</option>
     <option value="CHAT">Chat</option>
     <option value="CHIEN">Chien</option>
     <option value="NAC">NAC</option>
