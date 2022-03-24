@@ -476,10 +476,12 @@ class Repository{
 
         }
 
-        function vetByZipCode(string $cp){
+        function vetByZipCode(string $cp, string $espece){
             $veto = DB::table('Veterinaires')
             ->join('CodesPostaux', 'Veterinaires.CodePostalVeto', '=','CodesPostaux.CodePostal')
+            ->join('PriseEnCharge', 'Veterinaires.IDVeto', '=','PriseEnCharge.IDVeto')
             ->where('Veterinaires.CodePostalVeto',$cp)
+            ->where('PriseEnCharge.EspeceAnimal', $espece)
             ->get()->toArray();
             return $veto;
         }
@@ -498,10 +500,12 @@ class Repository{
             return $slots;
         }
 
-        function vetByName(string $cp){
+        function vetByName(string $cp, string $espece){
             $veto = DB::table('Veterinaires')
             ->join('CodesPostaux', 'Veterinaires.CodePostalVeto', '=','CodesPostaux.CodePostal')
+            ->join('PriseEnCharge', 'Veterinaires.IDVeto', '=','PriseEnCharge.IDVeto')
             ->where(DB::raw('lower(Veterinaires.NomVeto)'), strtolower($cp))
+            ->where('PriseEnCharge.EspeceAnimal', $espece)
             ->get()->toArray();
             return $veto;
         }

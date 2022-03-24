@@ -5,6 +5,10 @@ Inscription Vétérinaire
 @endsection
 
 @section('content')
+<style> #chien, #chat, #nac, #animal_rural {
+    width:20px;
+    height:20px;
+}</style>
 <form method="POST" action="{{route('vetRegistration.post')}}">
 @csrf
 @if ($errors->any())
@@ -111,19 +115,54 @@ Inscription Vétérinaire
       @enderror
     </div>
 
-    <div class="form-group">
+    
       <label for="PresentationVeto">Animaux que vous prenez en charge : </label><br>
-      <input type="checkbox" id="chat" name="chat" value="CHAT">
-        <label for="chat">Chat</label><br>
-        <input type="checkbox" id="chien" name="chien" value="CHIEN">
-        <label for="chien">Chien</label><br>
-        <input type="checkbox" id="nac" name="nac" value="NAC">
-        <label for="nac">NAC</label><br>
-        <input type="checkbox" id="animal_rural" name="animal_rural" value="RURAL">
-        <label for="animal_rural">Animal Rural</label><br>
-    </div>
+      <div class="form-check">
+        
+        <input type="checkbox" id="chat" name="chat" value="CHAT" aria-describedby="chat_feedback" class="form-check-input @error('chat') is-invalid @enderror">
+        <label for="chat" class="form-check-label ml-2">Chat</label> 
+        @error('chat')
+        <div id="chat_feedback" class="invalid-feedback">
+          {{ $message }}
+        </div>
+        @enderror
+        </div>
+        <div class="form-check">
+        
+        <input type="checkbox" id="chien" name="chien" value="CHIEN"
+        aria-describedby="chien_feedback" class="form-check-input @error('chien') is-invalid @enderror">
+        <label for="chien" class="form-check-label ml-2">Chien</label>
+        @error('chien')
+        <div id="chien_feedback" class="invalid-feedback">
+          {{ $message }}
+        </div>
+        @enderror
+        </div>
+        <div class="form-check">
+        
+        <input type="checkbox" id="nac" name="nac" value="NAC"
+        aria-describedby="nac_feedback" class="form-check-input @error('nac') is-invalid @enderror">
+        <label for="nac" class="form-check-label ml-2">NAC</label>
+        @error('nac')
+        <div id="nac_feedback" class="invalid-feedback">
+          {{ $message }}
+        </div>
+        @enderror
+        </div>
+        <div class="form-check">
+        
+        <input type="checkbox" id="animal_rural" name="animal_rural" value="RURAL"
+        aria-describedby="rural_feedback" class="form-check-input @error('rural') is-invalid @enderror">
+        <label for="animal_rural" class="form-check-label ml-2">Animal Rural</label>
+        @error('rural')
+        <div id="rural_feedback" class="invalid-feedback">
+          {{ $message }}
+        </div>
+        @enderror
+</div>
+   
 
-    <div class="form-group">
+    <div class="form-group mt-3">
       <label for="MdpVeto">Mot de passe</label>
       <input type="password" id="MdpVeto" name="MdpVeto" value="{{old('MdpVeto')}}"
              aria-describedby="MdpVeto_feedback" class="form-control @error('MdpVeto') is-invalid @enderror">  
