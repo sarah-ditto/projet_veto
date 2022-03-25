@@ -1,11 +1,12 @@
 @extends('base')
 
 @section('title')
-Consultations pour Compagnons Instantanées
+<div  style="margin: 15px; font-family: Cabin, serif;">    Consultations pour Compagnons Instantanées </div> 
 @endsection
 
 @section('content')
-<img class="rounded mx-auto d-block" id="welcome" src="{{URL::asset('images/welcome.jpg')}}">
+
+<img style= "background-size:full" class="container-fluid rounded mx-auto d-block " alt="Responsive image" id="welcome" src="https://images.pexels.com/photos/5122172/pexels-photo-5122172.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260">
 <div class="rounded m-auto p-3" id="form">
 <h4 class="text-center">Prenez RDV en ligne chez un vétérinaire :</h4>
 <h5 class="text-center">Recherche par code postal</h5>
@@ -72,6 +73,7 @@ Consultations pour Compagnons Instantanées
 </form> 
 </div>
 </div>
+
 @endsection
 
 
