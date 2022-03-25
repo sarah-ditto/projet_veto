@@ -50,11 +50,17 @@ Profil du Dr {{$veto->PrenomVeto}} {{$veto->NomVeto}}
                     </tr>
                 @endforeach
                </table>
+           
+
+               <div id="map" style="height:400px; width: 800px;" class="my-3"></div>
+
+
+
+            
             </div>
         </div>
-        
     </div>
+    
 </div>
-
 
 @endsection

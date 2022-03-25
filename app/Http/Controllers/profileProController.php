@@ -2,33 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Data;
-use Facade\FlareClient\Http\Client;
-use Illuminate\Http\Client\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
-use App\Repositories\Repository;
+use App\Models\Location;
+use Illuminate\Http\Request;
 
-class profileProController extends Controller {
-
-    public function __construct(Repository $repository)
-    {
-        $this->repository = $repository;
+class LocationController extends Controller
+{
+    public function index(){
+        return view('home');
     }
 
-    public function showVetProfile($IDVeto){
-        $veto = $this->repository->veterinaire ($IDVeto);
+    public function store(Request $request){
 
-        //$veto= DB::table('Veterinaires')->where('TelVeto',$tel)->get()->toArray();
-        return view('vet_profile', ['veto'=>$veto] );
+        Location::create([
+            'latitude'=>$request->lat,
+            'longitude'=>$request->lng
+        ]);
+        return view('home');
     }
-    
-    public function showCreateSlotsForm(Request $request){
-        if (!($request->session()->has('user')))
-            return redirect()->route('login.show');
-        if ($request->session()->get('userType')!=1)
-            return redirect()->route('welcome.show');
-        return view('create_slots');
-    }
-
 }
