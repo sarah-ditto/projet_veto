@@ -47,7 +47,7 @@
     
 
     <div class="form-group">
-      <label for="duration">Durée d'un créneau</label>
+      <label for="duration">Durée d'un créneau en minutes</label>
       <input type="number" id="duration" name="duration" value="{{old('duration')}}"
              aria-describedby="duration_feedback" class="form-control @error('duration') is-invalid @enderror"
              min =5 max = 120 step=5>  
