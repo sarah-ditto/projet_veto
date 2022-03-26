@@ -248,9 +248,9 @@ class Repository {
              $this->insertCreneaux($Creneau);
         }
 
-        //  foreach($this->data->Consultations()as$Consultations){
-        //       $this->insertConsultation($Consultations);
-        // }
+        foreach($this->data->Consultations()as$Consultations){
+             $this->insertConsultation($Consultations);
+        }
         foreach($this->data->PriseEnCharge()as$PriseEnCharge){
             $this->insertPriseEnCharge($PriseEnCharge);
         }
