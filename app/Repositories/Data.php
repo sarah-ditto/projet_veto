@@ -6,11 +6,13 @@ namespace App\Repositories;
 class Data {
     function CodesPostaux(){
         return [
+            ['CodePostal' => '13000',
+            'Ville' => 'Marseille'],
             ['CodePostal' => '13001',
             'Ville' => 'Marseille'],
-            ['CodePostal' => '13010',
-            'Ville' => 'Marseille'],
             ['CodePostal' => '13005',
+            'Ville' => 'Marseille'],
+            ['CodePostal' => '13010',
             'Ville' => 'Marseille'],
             ['CodePostal' => '13015',
             'Ville' => 'Marseille'],
@@ -19,14 +21,29 @@ class Data {
 
             ['CodePostal' => '75005',
             'Ville' => 'Paris'],
-            ['CodePostal' => '75015',
+            ['CodePostal' => '75010',
+            'Ville' => 'Paris'],
+            ['CodePostal' => '75011',
+            'Ville' => 'Paris'],
+            ['CodePostal' => '75012',
             'Ville' => 'Paris'],
             ['CodePostal' => '75013',
             'Ville' => 'Paris'],
             ['CodePostal' => '75014',
             'Ville' => 'Paris'],
-            ['CodePostal' => '75012',
+            ['CodePostal' => '75015',
             'Ville' => 'Paris'],
+            ['CodePostal' => '75016',
+            'Ville' => 'Paris'],
+            ['CodePostal' => '75017',
+            'Ville' => 'Paris'],
+
+            ['CodePostal' => '94400',
+            'Ville' => 'Vitry-Sur-Seine'],
+            ['CodePostal' => '93360',
+            'Ville' => 'Neuilly Plaisance'],
+            
+           
             
         ];
     }
