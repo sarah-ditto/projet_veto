@@ -222,17 +222,7 @@ class Repository {
         ;
     }
 
-    function insertHorairesVeto (array $HorairesVeto) :int{
-        return  
-        DB:: table('HorairesVeto')
-            ->insertGetId(['DateDebutAM'  => $HorairesVeto ['DateDebutAM'],
-                            'DateFinAM'  => $HorairesVeto ['DateFinAM'],
-                            'DateDebutPM'  => $HorairesVeto ['DateDebutPM'],
-                            'DateFinPM'  => $HorairesVeto ['DateFinPM'],
-                            'MailVeto'  => $HorairesVeto ['MailVeto']
-            ])
-        ;
-    }
+    
 
 
     function fillDatabase(): void {
@@ -241,7 +231,6 @@ class Repository {
         foreach($this->data->CodesPostaux() as $cp){
             $this->insertCodesPostaux($cp);
         }
-
         foreach($this->data->Veterinaires() as $veto){
                $this->insertVeterinaires($veto);
         }
@@ -251,23 +240,21 @@ class Repository {
         foreach($this->data->Especes()as$Especes){
              $this->insertEspeces($Especes);
         }
-        //foreach($this->data->Animaux()as$Animaux){
-        //     $this->insertAnimaux($Animaux);
-        // }
+        foreach($this->data->Animaux()as$Animaux){
+             $this->insertAnimaux($Animaux);
+        }
     
-        // foreach($this->data->Creneaux()as$Creneau){
-        //     $this->insertCreneaux($Creneau);
-        //}
+        foreach($this->data->Creneaux()as$Creneau){
+             $this->insertCreneaux($Creneau);
+        }
 
         //  foreach($this->data->Consultations()as$Consultations){
         //       $this->insertConsultation($Consultations);
         // }
-         //foreach($this->data->PriseEnCharge()as$PriseEnCharge){
-         //    $this->insertPriseEnCharge($PriseEnCharge);
-         //}
-         //foreach($this->data->HorairesVeto()as$HorairesVeto){
-         //    $this->insertHorairesVeto($HorairesVeto);
-         //}
+        foreach($this->data->PriseEnCharge()as$PriseEnCharge){
+            $this->insertPriseEnCharge($PriseEnCharge);
+        }
+        
     }
 
     function addClient(string $mail, string $mdp, string $nom, string $prenom, string $tel,

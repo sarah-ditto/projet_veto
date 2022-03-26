@@ -76,7 +76,7 @@
 </head>
 
     
-<body>
+<body style="background-color:slategrey;">
 
 <img style= "background-size:full; opacity:0.7 " class="container-fluid rounded mx-auto d-block " alt="Responsive image" id="welcome" src="https://images.pexels.com/photos/5122172/pexels-photo-5122172.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260">
 
