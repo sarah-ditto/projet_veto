@@ -5,6 +5,18 @@ Mes clients
 @endsection
 
 @section('content')
+@if (count((array)$clients)==0)
+<div class="page-wrap d-flex flex-row align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center">
+                <span class="display-1 d-block"> &#9785; </span>
+                <div class="my-4 lead">Vous n'avez aucun client pour le moment.</div>
+            </div>
+        </div>
+    </div>
+</div>
+@else
 <table class="table table-bordered">
   <thead class="thead-light">
     <tr>
@@ -28,5 +40,5 @@ Mes clients
     @endforeach
   </tbody>
 </table>
-
+@endif
 @endsection
