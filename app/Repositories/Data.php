@@ -156,9 +156,9 @@ class Data {
 
     function Clients () {
         return [
-            ['MailClient' => 'BenoithhgheLambert@gmail.com', 
-            'NomClient'  => 'Bazin',
-            'PrenomClient'=>'Benjamin',
+            ['MailClient' => 'BernardLambert@gmail.com', 
+            'NomClient'  => 'Lambert',
+            'PrenomClient'=>'Benoit',
             'TelClient'  => '0367536782',
             'MdpClient'  => 'HDJKSL',
             'NumRueClient' => 56 ,
@@ -233,56 +233,6 @@ class Data {
     function Especes () {
         return [
 
-            // ['EspeceAnimal'=>'Iguane', 
-            // 'TypeAnimal'=> 'NAC', ],
-            
-            // ['EspeceAnimal'=>'Labradore', 
-            // 'TypeAnimal'=> 'Canin', ],
-
-            // ['EspeceAnimal'=>'Chihuaha', 
-            // 'TypeAnimal'=> 'Canin', ],
-
-            // ['EspeceAnimal'=>'Bengal', 
-            // 'TypeAnimal'=> 'Felin', ],
-
-            // ['EspeceAnimal'=>'Lésard', 
-            // 'TypeAnimal'=> 'NAC', ],
-
-            // ['EspeceAnimal'=>'siamois', 
-            // 'TypeAnimal'=> 'Felin', ],
-
-            // ['EspeceAnimal'=>'Chartreux', 
-            // 'TypeAnimal'=> 'Felin', ],
-
-            // ['EspeceAnimal'=>'Radgoll', 
-            // 'TypeAnimal'=> 'Felin', ],
-
-            // ['EspeceAnimal'=>'Maine coon', 
-            // 'TypeAnimal'=> 'Felin', ],
-
-            // ['EspeceAnimal'=>'Beagle', 
-            // 'TypeAnimal'=> 'Canin', ],
-
-            // ['EspeceAnimal'=>'Boxer', 
-            // 'TypeAnimal'=> 'Canin', ],
-
-            // ['EspeceAnimal'=>'Berger allemand', 
-            // 'TypeAnimal'=> 'Canin', ],
-
-            // ['EspeceAnimal'=>'staff', 
-            // 'TypeAnimal'=> 'Canin', ],
-
-            // ['EspeceAnimal'=>'Bodeguero', 
-            // 'TypeAnimal'=> 'Canin', ],
-
-            // ['EspeceAnimal'=>'Lapin Bélier nain', 
-            // 'TypeAnimal'=> 'Rurale', ],
-
-            // ['EspeceAnimal'=>'Vache Limousine', 
-            // 'TypeAnimal'=> 'Rurale', ],
-
-            // ['EspeceAnimal'=>'Vache Charolaise', 
-            // 'TypeAnimal'=> 'Rurale', ],
             ['TypeAnimal'=> 'CHAT'],
             ['TypeAnimal'=> 'CHIEN'],
             ['TypeAnimal'=> 'NAC'],

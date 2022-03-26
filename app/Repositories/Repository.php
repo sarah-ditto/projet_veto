@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use App\Repositories\Data;
 
 
-class Repository{
+class Repository {
 
     function createDatabase(): void  {
         DB::unprepared(file_get_contents('database\build.sql'));
@@ -243,31 +243,31 @@ class Repository{
         }
 
         foreach($this->data->Veterinaires() as $veto){
-              $this->insertVeterinaires($veto);
+               $this->insertVeterinaires($veto);
         }
-        //  foreach($this->data->Clients()as$Clients){
-        //      $this->insertClients($Clients);
-        //  }
+        foreach($this->data->Clients()as$Clients){
+               $this->insertClients($Clients);
+           }
         foreach($this->data->Especes()as$Especes){
-            $this->insertEspeces($Especes);
+             $this->insertEspeces($Especes);
         }
-        //  foreach($this->data->Animaux()as$Animaux){
-        //      $this->insertAnimaux($Animaux);
-        //  }
+        //foreach($this->data->Animaux()as$Animaux){
+        //     $this->insertAnimaux($Animaux);
+        // }
     
-        //  foreach($this->data->Creneaux()as$Creneau){
-        //      $this->insertCreneaux($Creneau);
-        //  }
+        // foreach($this->data->Creneaux()as$Creneau){
+        //     $this->insertCreneaux($Creneau);
+        //}
 
         //  foreach($this->data->Consultations()as$Consultations){
         //       $this->insertConsultation($Consultations);
         // }
-        // foreach($this->data->PriseEnCharge()as$PriseEnCharge){
-        //     $this->insertPriseEnCharge($PriseEnCharge);
-        // }
-        // foreach($this->data->HorairesVeto()as$HorairesVeto){
-        //     $this->insertHorairesVeto($HorairesVeto);
-        // }
+         //foreach($this->data->PriseEnCharge()as$PriseEnCharge){
+         //    $this->insertPriseEnCharge($PriseEnCharge);
+         //}
+         //foreach($this->data->HorairesVeto()as$HorairesVeto){
+         //    $this->insertHorairesVeto($HorairesVeto);
+         //}
     }
 
     function addClient(string $mail, string $mdp, string $nom, string $prenom, string $tel,
