@@ -32,7 +32,7 @@
             <h5 class="my-0 mr-md-auto font-weight-normal">@yield('title')</h5>
 
             @if (session()->has('user'))
-            user ID :{{session()->get('user')[0]}} userType : {{session()->get('userType')}}
+            <!-- user ID :{{session()->get('user')[0]}} userType : {{session()->get('userType')}} -->
 
             <div class="dropdown" overflow="visible">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" href="#"> Menu
@@ -76,7 +76,7 @@
 </head>
 
     
-<body>
+<body style="background-color:slategrey;">
 
 <img style= "background-size:full; opacity:0.7 " class="container-fluid rounded mx-auto d-block " alt="Responsive image" id="welcome" src="https://images.pexels.com/photos/5122172/pexels-photo-5122172.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260">
 

@@ -23,6 +23,7 @@ Mes Rendez-Vous
       <th scope="col">Date & heure</th>
       <th scope="col">Client</th>
       <th scope="col">Animal</th>
+      <th scope="col">Motif du RDV</th>
     </tr>
   </thead>
   <tbody>
@@ -31,6 +32,7 @@ Mes Rendez-Vous
         <td class="col-md-3 border-top "> {{$consult->DateCreneau}}</td>
         <td class="col-md-3 border-top "> <a href="{{route('client.show',['IDClient'=>$consult->IDClient])}}">{{$consult->NomClient}} {{$consult->PrenomClient}}</a> </td>
         <td class="col-md-3 border-top "> <a href="{{route('animal.show', ['IDAnimal'=>$consult->IDAnimal, 'IDClient'=>$consult->IDClient ])}}"> {{$consult->NomAnimal}}</a></td>
+        <td class="col-md-3 border-top "> <p> {{$consult->MotifConsult}}</p></td>
     </tr>
     @endforeach
   </tbody>

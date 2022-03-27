@@ -26,14 +26,15 @@
             border-radius: 75%;
         }
     </style>
-
+</head>
+<body class="d-flex flex-column min-vh-100">
     <div class="border-bottom shadow-sm p-3 px-md-4 mb-3 " style="background-color:#D1E4E7 ">
         <div class="container align-items-center d-flex flex-column flex-md-row">
             <a href={{route('welcome.show')}}><img src="{{URL::asset('images/logo.png')}}" height="50" class="border rounded mr-6" alt="logo"></a>
             <h5 class="my-0 mr-md-auto font-weight-normal">@yield('title')</h5>
 
             @if (session()->has('user'))
-            user ID :{{session()->get('user')[0]}} userType : {{session()->get('userType')}}
+            <!-- user ID :{{session()->get('user')[0]}} userType : {{session()->get('userType')}} -->
 
             <div class="dropdown" overflow="visible">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" href="#"> Menu
@@ -74,14 +75,14 @@
     <div class="container mb-3">
         @yield('content')
     </div>
-</head>
+
 
       
 
 <!-- Footer -->
-<footer class="bg-dark text-center text-white">
+<footer class="bg-dark text-center mt-auto text-white">
     <!-- Grid container -->
-    <div class="container p-4 pb-0">
+    <div class="container p-1 pb-0">
         <!-- Section: Links -->
         <section class="">
             <!--Grid row-->
@@ -141,13 +142,13 @@
     <!-- Grid container -->
 
     <!-- Copyright -->
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+    <div class="text-center p-1" style="background-color: rgba(0, 0, 0, 0.2)">
         © 2022 Copyright:
         <a class="text-white" href="https://mdbootstrap.com/">Master CCI</a>
     </div>
     <!-- Copyright -->
 </footer>
 <!-- Footer -->
-
+    </body>
 
 </html>
