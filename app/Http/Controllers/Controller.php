@@ -9,10 +9,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+
 
 
 class Controller extends BaseController
@@ -23,46 +20,55 @@ class Controller extends BaseController
         $this->repository = $repository;
     }
 
+    // Affichage du profil d'un vétrinaire avec ses infos, ses créneaux, et les espèces prises en charges  
     public function showVetProfile($IDVeto){
         $veto = $this->repository->veterinaire($IDVeto);
         $creneaux = $this->repository->availableSlotsVeto($IDVeto);
         $pecs = $this->repository->getVetPriseEnCharge($IDVeto);
-        return view('vet_profile', ['veto'=>$veto,'creneaux'=>$creneaux, 'creneaux'=>$creneaux, 'pecs'=>$pecs]); 
+        return view('vet_profile', ['veto' => $veto, 'creneaux' => $creneaux, 'creneaux' => $creneaux, 'pecs' => $pecs]);
     }
 
+    // Affichage d'une liste de vétérinaires correspondant au résultats après recherches 
+    // avec les infos du vétérinaires et ses créneaux de siponibilités  
     public function showAllVetProfiles(){
         $vetos = $this->repository->veterinaires();
         $creneaux = $this->repository->availableSlots();
-        return view('all_vet_profiles', ['vetos'=>$vetos, 'creneaux'=>$creneaux]); 
+        return view('all_vet_profiles', ['vetos' => $vetos, 'creneaux' => $creneaux]);
     }
-    
+
+    // Affichage de la page d'accueil sans 
     public function showWelcome(Request $request){
         $request->session()->forget('backUrl');
         return view('welcome');
     }
 
+    // Affichage de la page A propos 
     public function showAbout(Request $request){
         $request->session()->forget('backUrl');
         return view('about');
     }
 
+    // Affichage de la page FAQ  
     public function showFaq(Request $request){
         $request->session()->forget('backUrl');
         return view('faq');
     }
 
+    // Affichage de la page de connexion qui nous redirige à la page d'accueil si authentification réussi 
     public function showLogin(Request $request){
         if ($request->session()->has('user'))
             return redirect()->route('welcome.show');
         return view('login');
     }
 
+    // Affichage du formulaire d'inscription en tant que client 
     public function showClientRegistrationForm(){
         return view('create_client');
     }
 
+    // Enregistrement d'un client dans la base de donnée après validation du formulaire
     public function storeClient(Request $request){
-        $messages=[
+        $messages = [
             'MailClient.required' => 'Vous devez saisir un e-mail.',
             'MailClient.email' => 'Vous devez saisir un e-mail valide.',
             'MailClient.unique' => "Cet utilisateur existe déjà.",
@@ -78,35 +84,47 @@ class Controller extends BaseController
             'Ville.required' => 'Vous devez saisir une ville.',
             'Ville.regex' => 'Vous devez saisir un nom de ville valide.'
         ];
-        $rules=[
-            'MailClient' => ['required', 'email','unique:Clients,MailClient'],
+        $rules = [
+            'MailClient' => ['required', 'email', 'unique:Clients,MailClient'],
             'MdpClient' => ['required'],
-            'NomClient' => ['required','regex:/^[\p{L}-]+$/u'],
-            'PrenomClient' => ['required','regex:/^[\p{L}-]+$/u'],
+            'NomClient' => ['required', 'regex:/^[\p{L}-]+$/u'],
+            'PrenomClient' => ['required', 'regex:/^[\p{L}-]+$/u'],
             'TelClient' => ['required'],
             'NomRueClient' => ['required'],
             'NumRueClient' => ['required'],
             'CodePostalClient' => ['required'],
-            'Ville' => ['required','regex:/^[\p{L}-]+$/u']
+            'Ville' => ['required', 'regex:/^[\p{L}-]+$/u']
         ];
-        $validatedData = $request->validate($rules,$messages);
+        $validatedData = $request->validate($rules, $messages);
+
         try {
-            $this->repository->addClient($validatedData['MailClient'],$validatedData['MdpClient'],
-            $validatedData['NomClient'],$validatedData['PrenomClient'],$validatedData['TelClient'],
-            $validatedData['NomRueClient'],$validatedData['NumRueClient'],$validatedData['CodePostalClient'],
-            $validatedData['Ville']);
-            } catch (Exception $e) {
-                return redirect()->back()->withInput()->withErrors("L'utilisateur existe déjà.");
-            }
-            return redirect()->route('login.show');
+            $this->repository->addClient(
+                $validatedData['MailClient'],
+                $validatedData['MdpClient'],
+                $validatedData['NomClient'],
+                $validatedData['PrenomClient'],
+                $validatedData['TelClient'],
+                $validatedData['NomRueClient'],
+                $validatedData['NumRueClient'],
+                $validatedData['CodePostalClient'],
+                $validatedData['Ville']
+            );
+        } 
+        catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors("L'utilisateur existe déjà.");
+        }
+
+        return redirect()->route('login.show');
     }
 
-    public function showVetRegistrationForm(){
+    // Affichage formulaire inscription en tant que vétérinaires 
+    public function showVetRegistrationForm() {
         return view('create_vet');
     }
 
-    public function storeVet(Request $request){
-        $messages=[
+     // Enregistrement d'un vétérinaire dans la base de donnée après validation du formulaire
+    public function storeVet(Request $request) {
+        $messages = [
             'MailVeto.required' => 'Vous devez saisir un e-mail.',
             'MailVeto.email' => 'Vous devez saisir un e-mail valide.',
             'MailVeto.unique' => "Cet utilisateur existe déjà.",
@@ -128,67 +146,87 @@ class Controller extends BaseController
             'animal_rural.required_without_all' => 'Vous devez cocher au moins une case'
 
         ];
-        $rules=[
-            'MailVeto' => ['required', 'email','unique:Clients,MailClient'],
+        
+        $rules = [
+            'MailVeto' => ['required', 'email', 'unique:Clients,MailClient'],
             'MdpVeto' => ['required'],
-            'NomVeto' => ['required','regex:/^[\p{L}-]+$/u'],
-            'PrenomVeto' => ['required','regex:/^[\p{L}-]+$/u'],
+            'NomVeto' => ['required', 'regex:/^[\p{L}-]+$/u'],
+            'PrenomVeto' => ['required', 'regex:/^[\p{L}-]+$/u'],
             'TelVeto' => ['required'],
             'NomRueVeto' => ['required'],
             'NumRueVeto' => ['required'],
             'CodePostalVeto' => ['required'],
-            'Ville' => ['required','regex:/^[\p{L}-]+$/u'],
+            'Ville' => ['required', 'regex:/^[\p{L}-]+$/u'],
             'PresentationVeto' => ['required'],
             'chat' =>  ['required_without_all:chien,nac,animal_rural'],
             'chien' =>  ['required_without_all:chat,nac,animal_rural'],
             'nac' =>  ['required_without_all:chat,chien,animal_rural'],
             'animal_rural' =>  ['required_without_all:chat,chien,nac'],
         ];
-        $validatedData = $request->validate($rules,$messages);
-        try {
-            $idVeto = $this->repository->addVet($validatedData['MailVeto'],$validatedData['MdpVeto'],
-            $validatedData['NomVeto'],$validatedData['PrenomVeto'],$validatedData['TelVeto'],
-            $validatedData['NomRueVeto'],$validatedData['NumRueVeto'],$validatedData['CodePostalVeto'],
-            $validatedData['Ville'],$validatedData['PresentationVeto']);
-            } catch (Exception $e) {
-                return redirect()->back()->withInput()->withErrors("L'utilisateur existe déjà.");
-            }
 
-        if(array_key_exists('chat', $validatedData))
-            $this->repository->insertPriseEnCharge(['EspeceAnimal'=>$validatedData['chat'],'IDVeto' => $idVeto]);
-        if(array_key_exists('chien', $validatedData))
-            $this->repository->insertPriseEnCharge(['EspeceAnimal'=>$validatedData['chien'],'IDVeto' => $idVeto]);
-        if(array_key_exists('nac', $validatedData))
-            $this->repository->insertPriseEnCharge(['EspeceAnimal'=>$validatedData['nac'],'IDVeto' => $idVeto]);
-        if(array_key_exists('animal_rural', $validatedData))
-            $this->repository->insertPriseEnCharge(['EspeceAnimal'=>$validatedData['animal_rural'],'IDVeto' => $idVeto]);
+        $validatedData = $request->validate($rules, $messages);
+        
+        try {
+            $idVeto = $this->repository->addVet(
+                $validatedData['MailVeto'],
+                $validatedData['MdpVeto'],
+                $validatedData['NomVeto'],
+                $validatedData['PrenomVeto'],
+                $validatedData['TelVeto'],
+                $validatedData['NomRueVeto'],
+                $validatedData['NumRueVeto'],
+                $validatedData['CodePostalVeto'],
+                $validatedData['Ville'],
+                $validatedData['PresentationVeto']
+            );
+        } 
+        catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors("L'utilisateur existe déjà.");
+        }
+
+        if (array_key_exists('chat', $validatedData))
+            $this->repository->insertPriseEnCharge(['EspeceAnimal' => $validatedData['chat'], 'IDVeto' => $idVeto]);
+        if (array_key_exists('chien', $validatedData))
+            $this->repository->insertPriseEnCharge(['EspeceAnimal' => $validatedData['chien'], 'IDVeto' => $idVeto]);
+        if (array_key_exists('nac', $validatedData))
+            $this->repository->insertPriseEnCharge(['EspeceAnimal' => $validatedData['nac'], 'IDVeto' => $idVeto]);
+        if (array_key_exists('animal_rural', $validatedData))
+            $this->repository->insertPriseEnCharge(['EspeceAnimal' => $validatedData['animal_rural'], 'IDVeto' => $idVeto]);
 
         return redirect()->route('login.show');
     }
 
-    public function login(Request $request, Repository $repository){
+    // Connexion du vétérinaire ou du client si l'authentification est réussi 
+    public function login(Request $request, Repository $repository) {
+
         $rules = [
             'email' => ['required', 'email'],
             'password' => ['required']
         ];
+
         $messages = [
             'email.required' => 'Vous devez saisir un e-mail.',
             'email.email' => 'Vous devez saisir un e-mail valide.',
             'password.required' => "Vous devez saisir un mot de passe."
         ];
+
         $validatedData = $request->validate($rules, $messages);
+
         try {
-        $user = $this->repository->getUser($validatedData['email'],$validatedData['password']);
-        $request->session()->put('user', $user['user']);
-        $request->session()->put('userType', $user['userType']);
-        } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors(['email'=>"Impossible de vous authentifier.".$e->getMessage()]);
+            $user = $this->repository->getUser($validatedData['email'], $validatedData['password']);
+            $request->session()->put('user', $user['user']);
+            $request->session()->put('userType', $user['userType']);
+        } 
+        
+        catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['email' => "Impossible de vous authentifier." . $e->getMessage()]);
         }
         return ($url = $request->session()->get('backUrl')) ?
-                    redirect($url) :
-                    redirect()->route('welcome.show');
+            redirect($url) :
+            redirect()->route('welcome.show');
     }
 
+    // Déconnexion de l'utilisateurs Client ou vétérinaire et redirection à la page d'accueil
     public function logout(Request $request) {
         $request->session()->forget('user');
         $request->session()->forget('userType');
@@ -196,25 +234,28 @@ class Controller extends BaseController
         return redirect()->route('welcome.show');
     }
 
-    public function showCreneaux(){
+    // Affichage des créneaux pour un vétérinaire 
+    public function showCreneaux() {
         $vetos = $this->repository->veterinaires();
         $creneaux = $this->repository->availableSlots();
-        return view('creneaux', ['vetos'=>$vetos, 'creneaux'=>$creneaux]);
+        return view('creneaux', ['vetos' => $vetos, 'creneaux' => $creneaux]);
     }
 
-    public function showCreateSlotsForm(Request $request){
+    // Affichage du formulaire pour la création d'un créneau ==> Compte vétérinaire userType=1
+    public function showCreateSlotsForm(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        if ($request->session()->get('userType')!=1)
+        if ($request->session()->get('userType') != 1)
             return redirect()->route('welcome.show');
         return view('create_slots');
     }
 
-    public function storeSlots(Request $request){
+    // Enregistrement des créneaux ajouter dans la base de donnée après validation du formulaire
+    public function storeSlots(Request $request) {
         $rules = [
-            'startDate' => ['required','date'],
-            'startTime' => ['required','date_format:H:i','before:endTime'],
-            'endTime'=> ['required','date_format:H:i','after:startTime'],
+            'startDate' => ['required', 'date'],
+            'startTime' => ['required', 'date_format:H:i', 'before:endTime'],
+            'endTime' => ['required', 'date_format:H:i', 'after:startTime'],
             'duration' => ['required']
         ];
         $messages = [
@@ -236,30 +277,34 @@ class Controller extends BaseController
         $end = "$date $endTime";
         try {
             $slots = $this->repository->createSlots($start, $end, $validatedData['duration']);
-            $this->repository->insertCreatedSlots($slots,$validatedData['duration'],$request->session()->get('user'));
-            } catch (Exception $e) {
-                return redirect()->back()->withInput()->withErrors(['startDate'=>"Impossible de créer vos créneaux.".$e->getMessage()]);
-            }
+            $this->repository->insertCreatedSlots($slots, $validatedData['duration'], $request->session()->get('user'));
+        } 
+        
+        catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['startDate' => "Impossible de créer vos créneaux." . $e->getMessage()]);
+        }
         return redirect()->route('welcome.show');
     }
 
-    public function createAnimal(Request $request){
+    // Affichage formulaire Ajouter un animal de compagnie ==> Compte client userType=2
+    public function createAnimal(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        if ($request->session()->get('userType')!=2)
+        if ($request->session()->get('userType') != 2)
             return redirect()->route('welcome.show');
         return view('create_animal');
     }
 
-    public function storeAnimal(Request $request){
+    // Enregistrement d'un animal dans la base de donnée après validation du formulaire
+    public function storeAnimal(Request $request) {
         $rules = [
             'photoAnimal' => ['image'],
-            'nameAnimal' => ['required','regex:/^[\p{L}-]+$/u'],
-            'dateAnimal' => ['required','date'],
-            'typeAnimal'=> ['required','exists:Especes,TypeAnimal'],
+            'nameAnimal' => ['required', 'regex:/^[\p{L}-]+$/u'],
+            'dateAnimal' => ['required', 'date'],
+            'typeAnimal' => ['required', 'exists:Especes,TypeAnimal'],
             'sexeAnimal' => ['required'],
             'sterilisationAnimal' => ['required'],
-            'poidsAnimal' => ['numeric','nullable'],
+            'poidsAnimal' => ['numeric', 'nullable'],
             'pathologiesAnimal' => ['nullable']
         ];
         $messages = [
@@ -274,133 +319,153 @@ class Controller extends BaseController
             'sterilisationAnimal.required' => 'Vous devez séléctionner saisir un état de stérilisation.',
             'poidsAnimal.numeric' => 'Le poids doit être un nombre.'
         ];
-        $validatedData = $request->validate($rules,$messages);
+        $validatedData = $request->validate($rules, $messages);
         try {
-            $IDAnimal = $this->repository->insertAnimaux(['NomAnimal' => $validatedData['nameAnimal'],
-            'DateNaissAnimal'=> $validatedData['dateAnimal'],
-            'SterilisationAnimal' => $validatedData['sterilisationAnimal'],
-            'PoidsAnimal' => $validatedData['poidsAnimal'], 
-            'SexeAnimal' => $validatedData['sexeAnimal'], 
-            'PathologiesAnimal' => $validatedData['pathologiesAnimal'], 
-            'IDClient' => $request->session()->get('user'), 
-            'TypeAnimal' => $validatedData['typeAnimal'] ]);
-            } catch (Exception $e) {
-                return redirect()->back()->withInput()->withErrors("Impossible d'ajouter l'animal");
-            }
+            $IDAnimal = $this->repository->insertAnimaux([
+                'NomAnimal' => $validatedData['nameAnimal'],
+                'DateNaissAnimal' => $validatedData['dateAnimal'],
+                'SterilisationAnimal' => $validatedData['sterilisationAnimal'],
+                'PoidsAnimal' => $validatedData['poidsAnimal'],
+                'SexeAnimal' => $validatedData['sexeAnimal'],
+                'PathologiesAnimal' => $validatedData['pathologiesAnimal'],
+                'IDClient' => $request->session()->get('user'),
+                'TypeAnimal' => $validatedData['typeAnimal']
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors("Impossible d'ajouter l'animal");
+        }
+        // photo de l'animal :
         // if($request->photoAnimal != NULL)
         //     Storage::disk('local')->put("animals/$IDAnimal",$request->photoAnimal);
         // else
         //     Storage::copy('animals/image.jpg', "animals/$IDAnimal/image.jpg");
 
         return ($url = $request->session()->get('backUrl')) ?
-                    redirect($url) :
-                    redirect()->route('client.show',['IDClient'=>$request->session()->get('user')]);
+            redirect($url) :
+            redirect()->route('client.show', ['IDClient' => $request->session()->get('user')]);
     }
 
-    public function showConfirmSlotForm(Request $request, int $IDCreneau){
-        if (!($request->session()->has('user'))){
+    // Affichage Confirmation d'un créneau de RDV 
+    public function showConfirmSlotForm(Request $request, int $IDCreneau) {
+        if (!($request->session()->has('user'))) {
             $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
             $request->session()->put('backUrl', $url);
             return redirect()->route('login.show');
         }
-            
-        if ($request->session()->get('userType')==1)
+
+        if ($request->session()->get('userType') == 1)
             return redirect()->route('welcome.show');
         $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $request->session()->put('backUrl', $url);
         $creneau = $this->repository->creneau($IDCreneau);
         $animaux = $this->repository->animauxProprio($request->session()->get('user'));
-        return view('confirmation',['creneau'=>$creneau,'animaux' => $animaux]);
+        return view('confirmation', ['creneau' => $creneau, 'animaux' => $animaux]);
     }
 
-    public function showClient(Request $request, int $IDClient){
+    // Affichage du profil client pour le compte client et le compte vétérinaire du patient client 
+     // ==> compte client  + compte vétérinaire du client 
+    public function showClient(Request $request, int $IDClient) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        if (($request->session()->get('userType')==2)&&($request->session()->get('user')!=$IDClient))
+        if (($request->session()->get('userType') == 2) && ($request->session()->get('user') != $IDClient))
             return redirect()->route('welcome.show');
-        if (($request->session()->get('userType')==1)&&($this->repository->isVetofClient($IDClient,$request->session()->get('user'))==0))
+        if (($request->session()->get('userType') == 1) && ($this->repository->isVetofClient($IDClient, $request->session()->get('user')) == 0))
             return redirect()->route('welcome.show');
-        if ($request->session()->get('userType')==1)
-            $animaux = $this->repository->listAnimalsOfClient($request->session()->get('user'),$IDClient);
-        else 
+        if ($request->session()->get('userType') == 1)
+            $animaux = $this->repository->listAnimalsOfClient($request->session()->get('user'), $IDClient);
+        else
             $animaux = $this->repository->animauxProprio($IDClient);
         $client = $this->repository->client($IDClient)[0];
-        return view('client_profile', ['animaux'=>$animaux,'client'=>$client]);
+        return view('client_profile', ['animaux' => $animaux, 'client' => $client]);
     }
 
-    public function showAnimal(Request $request, int $IDClient, int $IDAnimal){
+    // Affichage du dossier de l'animal pour le client et pour le vetérinaire du patient animal 
+    // ==> compte client  + compte vétérinaire de l'animal 
+    public function showAnimal(Request $request, int $IDClient, int $IDAnimal) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        if (($request->session()->get('userType')==2)&&($request->session()->get('user')!=$IDClient))
+        if (($request->session()->get('userType') == 2) && ($request->session()->get('user') != $IDClient))
             return redirect()->route('welcome.show');
-        if (($request->session()->get('userType')==1)&&($this->repository->isVetofAnimal($IDAnimal,$request->session()->get('user'))==0))
+        if (($request->session()->get('userType') == 1) && ($this->repository->isVetofAnimal($IDAnimal, $request->session()->get('user')) == 0))
             return redirect()->route('welcome.show');
         $animal = $this->repository->animal($IDAnimal);
         $consultations = $this->repository->getAnimalAppointments($IDAnimal);
-        return view('animal_profil', ['animal'=>$animal,'consults'=>$consultations]); 
+        return view('animal_profil', ['animal' => $animal, 'consults' => $consultations]);
     }
 
-    function storeSlotConfirmation(Request $request, int $IDCreneau){
+    // Enregistrement dans la base de donnée d'un créneaux de RDV réservé 
+    function storeSlotConfirmation(Request $request, int $IDCreneau) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        if ($request->session()->get('userType')==1)
+        if ($request->session()->get('userType') == 1)
             return redirect()->route('welcome.show');
-        $rules = ['animal'=>['exists:Animaux,IDAnimal']];
+        $rules = ['animal' => ['exists:Animaux,IDAnimal']];
         $messages = ['animal.exists' => 'Vous devez choisir un animal existant.'];
-        $validatedData = $request->validate($rules,$messages);
-        try{
+        $validatedData = $request->validate($rules, $messages);
+        try {
             $IDVeto = $this->repository->creneau($IDCreneau)->IDVeto;
-            $this->repository->isVetofType($validatedData['animal'],$IDVeto);
-        } catch (Exception $e) {
+            $this->repository->isVetofType($validatedData['animal'], $IDVeto);
+        } 
+        catch (Exception $e) {
             return redirect()->back()->withInput()->withErrors("Type non pris en charge.");
         }
-        try{
-            $this->repository->insertConsultation(['ObsConsult' => " ", 
-            'MotifConsult'  => " ",
-            'IDAnimal'  => $validatedData['animal'],
-            'IDCreneau'  => $IDCreneau]);
-        } catch (Exception $e) {
+        try {
+            $this->repository->insertConsultation([
+                'ObsConsult' => " ",
+                'MotifConsult'  => " ",
+                'IDAnimal'  => $validatedData['animal'],
+                'IDCreneau'  => $IDCreneau
+            ]);
+        } 
+        catch (Exception $e) {
             return redirect()->back()->withInput()->withErrors("Le créneaux a déjà été réservé.");
         }
 
-        
+
         return redirect()->route('appointments.show');
     }
 
-    public function showClientAppointments(Request $request){
+    // Affichage des RDV historique et actuel ==> Compte client userType=2
+    public function showClientAppointments(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        if ($request->session()->get('userType')==1)
+        if ($request->session()->get('userType') == 1)
             return redirect()->route('welcome.show');
         $futureConsults = $this->repository->getFutureAppointmentsClient($request->session()->get('user'));
         $pastConsults = $this->repository->getPastAppointmentsClient($request->session()->get('user'));
-        return view('client_appointments',['pastConsults'=>$pastConsults,'futureConsults'=>$futureConsults]);
+        return view('client_appointments', ['pastConsults' => $pastConsults, 'futureConsults' => $futureConsults]);
     }
-    
-    public function showBookedSlotsList (Request $request){
+
+    // Affichage Agenda du vétérinaire, RDV avec ses client, motif consultation date horaire ...
+    // Compte vétérinaires userType=1
+    public function showBookedSlotsList(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        if ($request->session()->get('userType')!=1)
+        if ($request->session()->get('userType') != 1)
             return redirect()->route('welcome.show');
-        $veto = $this->repository->veterinaire ($request->session()->get('user'));
-        $consultations = $this->repository -> bookedSlotsVeto($request->session()->get('user'));
-        return view ('booked_slots', ['veto'=> $veto, 'consultations'=>$consultations] );
+        $veto = $this->repository->veterinaire($request->session()->get('user'));
+        $consultations = $this->repository->bookedSlotsVeto($request->session()->get('user'));
+        return view('booked_slots', ['veto' => $veto, 'consultations' => $consultations]);
     }
 
-    public function showClientsList(Request $request){
+     // Affichage Mes client pour le vétérinaire, liste de ses client et de leurs animaux de compagnie avec info
+    // Compte vétérinaires userType=1
+    public function showClientsList(Request $request) {
         if (!($request->session()->has('user')))
-           return redirect()->route('login.show');
-        if ($request->session()->get('userType')!=1)
-           return redirect()->route('welcome.show');
+            return redirect()->route('login.show');
+        if ($request->session()->get('userType') != 1)
+            return redirect()->route('welcome.show');
         $clients = $this->repository->listClients($request->session()->get('user'));
         $animals = $this->repository->listAnimals($request->session()->get('user'));
-        return view ('clients_list', ['clients'=> $clients, 'animals'=>$animals] );
+        return view('clients_list', ['clients' => $clients, 'animals' => $animals]);
     }
 
-    public function searchByZipCode (Request $request){
+    // Renvoie une liste de résultats vétérinaire si la requete est validée 
+    // par une recherche composée du code Postal et catégorie de l'animal 
+    public function searchByZipCode(Request $request) {
         $rules = [
             'codePostal' => ['regex:/^(([0-8][0-9])|(9[0-5]))[0-9]{3}$/'],
-            'categorie_animal1'=> ['required']
+            'categorie_animal1' => ['required']
         ];
         $messages = [
             'codePostal.regex' => 'Vous devez saisir code postal valide.',
@@ -408,19 +473,21 @@ class Controller extends BaseController
         ];
         $validatedData = $request->validate($rules, $messages);
 
-        try{
-            $vets = $this->repository->vetByZipCode($validatedData['codePostal'],$validatedData['categorie_animal1']);
-            $slots = $this->repository -> availableSlotsZipCode($validatedData['codePostal']); 
-            } catch (Exception $e) {
-                return redirect()->back()->withInput()->withErrors("Recherche impossible");
-            }
-        return view ('search_results', ['vetos'=> $vets, 'creneaux'=>$slots] );
+        try {
+            $vets = $this->repository->vetByZipCode($validatedData['codePostal'], $validatedData['categorie_animal1']);
+            $slots = $this->repository->availableSlotsZipCode($validatedData['codePostal']);
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors("Recherche impossible");
+        }
+        return view('search_results', ['vetos' => $vets, 'creneaux' => $slots]);
     }
 
-    public function searchByName (Request $request){
+    // Renvoie une liste de résultats vétérinaire si la requete est validée 
+    // par une recherche composée du nom d'un vétérinaire et catégorie de l'animal 
+    public function searchByName(Request $request) {
         $rules = [
             'nom' => ['regex:/^[\p{L}-]+$/u'],
-            'categorie_animal2'=> ['required']
+            'categorie_animal2' => ['required']
         ];
         $messages = [
             'nom.regex' => 'Vous devez un nom valide.',
@@ -428,52 +495,53 @@ class Controller extends BaseController
         ];
         $validatedData = $request->validate($rules, $messages);
 
-        $vets = $this->repository->vetByName($validatedData['nom'],$validatedData['categorie_animal2']);
-        $slots = $this->repository -> availableSlotsName($validatedData['nom']);
-        return view ('search_results', ['vetos'=> $vets, 'creneaux'=>$slots] );
+        $vets = $this->repository->vetByName($validatedData['nom'], $validatedData['categorie_animal2']);
+        $slots = $this->repository->availableSlotsName($validatedData['nom']);
+        return view('search_results', ['vetos' => $vets, 'creneaux' => $slots]);
     }
 
-    public function deleteAppointment(Request $request, int $IDConsult){
-        try{
+    // Suppression d'un RDV 
+    public function deleteAppointment(Request $request, int $IDConsult) {
+        try {
             $this->repository->deleteAppointment($IDConsult);
-            } catch (Exception $e) {
-                return redirect()->back()->withErrors("Annulation impossible");
-            }
+        } 
+        
+        catch (Exception $e) {
+            return redirect()->back()->withErrors("Annulation impossible");
+        }
         return redirect()->back();
     }
 
-    public function showAppointmentUpdateForm(Request $request,int $IDClient, int $IDAnimal, int $IDConsult){
+    // Affichage d'un formulaire pour modifier l'onglet consultation du dossier animal
+    // ==> Compte vétérinaires userType=1
+    public function showAppointmentUpdateForm(Request $request, int $IDClient, int $IDAnimal, int $IDConsult) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
-        if ($request->session()->get('userType')==2)
+        if ($request->session()->get('userType') == 2)
             return redirect()->route('welcome.show');
-        if (($request->session()->get('userType')==1)&&($this->repository->isAppointmentofVet($IDConsult,$request->session()->get('user'))==0))
+        if (($request->session()->get('userType') == 1) && ($this->repository->isAppointmentofVet($IDConsult, $request->session()->get('user')) == 0))
             return redirect()->route('welcome.show');
-        $consult= $this->repository->getAnimalAppointment($IDAnimal, $IDConsult);
-        return view('update_appointment',['consult'=>$consult]);
+        $consult = $this->repository->getAnimalAppointment($IDAnimal, $IDConsult);
+        return view('update_appointment', ['consult' => $consult]);
     }
 
-    public function storeAppointmentUpdate(Request $request,int $IDClient, int $IDAnimal,int $IDConsult){
+    // Enregistrement dans la base de donnée des modification de l'onglet consultation du dossier animal
+    // par son vétérinaire 
+    public function storeAppointmentUpdate(Request $request, int $IDClient, int $IDAnimal, int $IDConsult) {
         $rules = [
-            'motifConsult' => ['string','nullable'],
-            'obsConsult' => ['string','nullable']
+            'motifConsult' => ['string', 'nullable'],
+            'obsConsult' => ['string', 'nullable']
         ];
         $messages = [
             'motifConsult.string' => ['Votre motif doit être valide.'],
             'obsConsult.string' => ['Vos observations doivent être valides.']
         ];
         $validatedData = $request->validate($rules, $messages);
-        try{
-            $this->repository->updateAppointment($IDConsult, $validatedData['motifConsult'],$validatedData['obsConsult']);
-            } catch (Exception $e) {
-                return redirect()->back()->withErrors("Modification impossible");
-            }
-        return redirect()->route('animal.show',['IDClient'=>$IDClient,'IDAnimal'=>$IDAnimal]);
+        try {
+            $this->repository->updateAppointment($IDConsult, $validatedData['motifConsult'], $validatedData['obsConsult']);
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors("Modification impossible");
+        }
+        return redirect()->route('animal.show', ['IDClient' => $IDClient, 'IDAnimal' => $IDAnimal]);
     }
-
-
-
-    
-
-
 }

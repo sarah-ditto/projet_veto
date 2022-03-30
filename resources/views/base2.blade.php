@@ -1,5 +1,5 @@
 <!doctype html>
-<html >
+<html>
 
 <head>
     <title>@yield('title')</title>
@@ -19,7 +19,7 @@
             position: absolute;
             top: 40%;
             left: 20%;
-            background-color:#D1E4E7;
+            background-color: #D1E4E7;
             opacity: 0.8;
             display: block;
             z-index: 2;
@@ -75,13 +75,13 @@
     </div>
 </head>
 
-    
+
 <body style="background-color:slategrey;">
 
-<img style= "background-size:full; opacity:0.7 " class="container-fluid rounded mx-auto d-block " alt="Responsive image" id="welcome" src="https://images.pexels.com/photos/5122172/pexels-photo-5122172.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260">
+    <img style="background-size:full; opacity:0.7 " class="container-fluid rounded mx-auto d-block " alt="Responsive image" id="welcome" src="https://images.pexels.com/photos/5122172/pexels-photo-5122172.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260">
 
 </body>
-    
+
 
 <!-- Footer -->
 <footer class="bg-dark text-center text-white">

@@ -9,7 +9,7 @@
 
 @section('content')
 
-<div class="rounded m-auto p-3 "  id="form">
+<div class="rounded m-auto p-3 " id="form">
   <h4 class="text-center">Prenez RDV en ligne chez un vétérinaire :</h4>
   <h5 class="text-center">Recherche par code postal</h5>
   <div class="d-flex justify-content-center">

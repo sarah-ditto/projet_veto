@@ -13,10 +13,10 @@ Profil et compagnons
                     <h4 class="text-right">Informations</h4>
                 </div>
                 <div class="row mt-3">
-                <span class="material-icons mr-2">person</span>{{$client->PrenomClient}} {{$client->NomClient}}
+                    <span class="material-icons mr-2">person</span>{{$client->PrenomClient}} {{$client->NomClient}}
                 </div>
                 <div class="row mt-3">
-                <span class="material-icons mr-2">cottage</span>{{$client->NumRueClient}} {{$client->NomRueClient}} {{$client->CodePostalClient}} {{$client->Ville}}
+                    <span class="material-icons mr-2">cottage</span>{{$client->NumRueClient}} {{$client->NomRueClient}} {{$client->CodePostalClient}} {{$client->Ville}}
                 </div>
                 <div class="row mt-3">
                     <span class="material-icons mr-2">phone</span>{{$client->TelClient}}
@@ -31,9 +31,9 @@ Profil et compagnons
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="text-right">Compagnons</h4>
                 </div>
-                    @foreach($animaux as $animal)
-                    <div class="mt-3"><span class="material-icons mr-2">pets</span><a href="{{route('animal.show', ['IDAnimal'=>$animal->IDAnimal, 'IDClient'=>$animal->IDClient ])}}"> {{$animal->NomAnimal}}</a></div>
-                    @endforeach
+                @foreach($animaux as $animal)
+                <div class="mt-3"><span class="material-icons mr-2">pets</span><a href="{{route('animal.show', ['IDAnimal'=>$animal->IDAnimal, 'IDClient'=>$animal->IDClient ])}}"> {{$animal->NomAnimal}}</a></div>
+                @endforeach
             </div>
         </div>
     </div>

@@ -5,25 +5,25 @@ Créneaux
 @endsection
 
 @section('content')
-    <table>
+<table>
     @foreach($vetos as $veto)
-        <tr>
-           <td> Docteur {{$veto->PrenomVeto}} {{$veto->NomVeto}} </td>
-            <td> 
+    <tr>
+        <td> Docteur {{$veto->PrenomVeto}} {{$veto->NomVeto}} </td>
+        <td>
             <table>
-               @foreach($creneaux as $creneau)
-               @if($creneau->IDVeto == $veto->IDVeto)
+                @foreach($creneaux as $creneau)
+                @if($creneau->IDVeto == $veto->IDVeto)
                 <tr>
-        
+
                     <td><a href="{{route('confirmSlot.show', ['IDCreneau'=>$creneau->IDCreneau])}}"> {{$creneau->DateCreneau}} </a></td>
-                    
+
                 </tr>
                 @endif
-               @endforeach
-               </table>
-               
-            </td>
-        </tr>
+                @endforeach
+            </table>
+
+        </td>
+    </tr>
     @endforeach
-    </table>
+</table>
 @endsection
