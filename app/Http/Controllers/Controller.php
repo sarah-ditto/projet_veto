@@ -20,7 +20,7 @@ class Controller extends BaseController
         $this->repository = $repository;
     }
 
-    // Show the profile of a veterinary with all of his info, his slots, and the species treated
+    // Shows the profile of a vet with all of his info, his slots, and the species treated
     public function showVetProfile($IDVeto){
         $veto = $this->repository->veterinaire($IDVeto);
         $creneaux = $this->repository->availableSlotsVeto($IDVeto);
@@ -28,45 +28,44 @@ class Controller extends BaseController
         return view('vet_profile', ['veto' => $veto, 'creneaux' => $creneaux, 'creneaux' => $creneaux, 'pecs' => $pecs]);
     }
 
-    // Display of a list of veterinaries corresponding to the results after a search 
-    // with infos and slots/appointments available
+    // Displays all veterinaries with infos and slots/appointments available
     public function showAllVetProfiles(){
         $vetos = $this->repository->veterinaires();
         $creneaux = $this->repository->availableSlots();
         return view('all_vet_profiles', ['vetos' => $vetos, 'creneaux' => $creneaux]);
     }
 
-    // Display of the welcome page
+    // Displays welcome page
     public function showWelcome(Request $request){
         $request->session()->forget('backUrl');
         return view('welcome');
     }
 
-    // Display of the page about
+    // Displays about page 
     public function showAbout(Request $request){
         $request->session()->forget('backUrl');
         return view('about');
     }
 
-    // Display of the page FAQ  
+    // Displays FAQ page 
     public function showFaq(Request $request){
         $request->session()->forget('backUrl');
         return view('faq');
     }
 
-    // Display of the login page that redirects to the welcome page if authentification is successfull
+    // Displays login page
     public function showLogin(Request $request){
         if ($request->session()->has('user'))
             return redirect()->route('welcome.show');
         return view('login');
     }
 
-    // Display of the sign up for for the client
+    // Displays client registration form
     public function showClientRegistrationForm(){
         return view('create_client');
     }
 
-    // Saving the client in the database after validation of the form
+    // Saves the client in the database after submission of the form
     public function storeClient(Request $request){
         $messages = [
             'MailClient.required' => 'Vous devez saisir un e-mail.',
@@ -117,12 +116,12 @@ class Controller extends BaseController
         return redirect()->route('login.show');
     }
 
-    // Display of the sign up form for the veterinary
+    // Displays vet registration form
     public function showVetRegistrationForm() {
         return view('create_vet');
     }
 
-    //  Saving the veterinary in the database after validation of the form
+    // Saves the vet in the database after submission of the form
     public function storeVet(Request $request) {
         $messages = [
             'MailVeto.required' => 'Vous devez saisir un e-mail.',
@@ -196,7 +195,7 @@ class Controller extends BaseController
         return redirect()->route('login.show');
     }
 
-    // Login of the veterinary or the client if authentification is successful 
+    // Creates a session for vet or client if authentication successful 
     public function login(Request $request, Repository $repository) {
 
         $rules = [
@@ -226,7 +225,7 @@ class Controller extends BaseController
             redirect()->route('welcome.show');
     }
 
-    // Log out of the user (client or veterinary) and redirection to the welcome page
+    // closes session of user and redirects to welcom page
     public function logout(Request $request) {
         $request->session()->forget('user');
         $request->session()->forget('userType');
@@ -234,14 +233,15 @@ class Controller extends BaseController
         return redirect()->route('welcome.show');
     }
 
-    // Dispaly of the slots available for a veterinary
+    // Displays of the slots available for all vets
     public function showCreneaux() {
         $vetos = $this->repository->veterinaires();
         $creneaux = $this->repository->availableSlots();
         return view('creneaux', ['vetos' => $vetos, 'creneaux' => $creneaux]);
     }
 
-    // Display of the form to create a slot ==> Veterinary account userType=1
+    // Displays of the form to create a slot ==> vet account userType=1
+    // redirects if not allowed to
     public function showCreateSlotsForm(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -250,7 +250,7 @@ class Controller extends BaseController
         return view('create_slots');
     }
 
-    // Save the slots added to the database after validation of the form
+    // Adds slots to the database after submission of the form
     public function storeSlots(Request $request) {
         $rules = [
             'startDate' => ['required', 'date'],
@@ -286,7 +286,7 @@ class Controller extends BaseController
         return redirect()->route('welcome.show');
     }
 
-    // Display of the form to add an animal ==> account client userType=2
+    // Displays form to add an animal ==> account client userType=2
     public function createAnimal(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -295,7 +295,7 @@ class Controller extends BaseController
         return view('create_animal');
     }
 
-    // Saving the animal in the database after validating the form
+    // Saves the animal in the database after submission of the form
     public function storeAnimal(Request $request) {
         $rules = [
             'photoAnimal' => ['image'],
@@ -345,7 +345,7 @@ class Controller extends BaseController
             redirect()->route('client.show', ['IDClient' => $request->session()->get('user')]);
     }
 
-    // Display of confirmation of a slot for an appointment
+    // Displays confirmation form for an appointment
     public function showConfirmSlotForm(Request $request, int $IDCreneau) {
         if (!($request->session()->has('user'))) {
             $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -362,7 +362,7 @@ class Controller extends BaseController
         return view('confirmation', ['creneau' => $creneau, 'animaux' => $animaux]);
     }
 
-    // Display of the client profile for the client and the veterinary of the client
+    // Displays client profile for the given client and the vet(s) of the client
     public function showClient(Request $request, int $IDClient) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -378,7 +378,7 @@ class Controller extends BaseController
         return view('client_profile', ['animaux' => $animaux, 'client' => $client]);
     }
 
-    // Display of the animal file for the client and for the veterinary of the animal
+    // Displaysanimal file for the client and for the vet(s) of the animal
     public function showAnimal(Request $request, int $IDClient, int $IDAnimal) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -391,7 +391,7 @@ class Controller extends BaseController
         return view('animal_profil', ['animal' => $animal, 'consults' => $consultations]);
     }
 
-    // saving a confirmed appointement in the database
+    // Saves a confirmed appointement in the database after submission of the form
     function storeSlotConfirmation(Request $request, int $IDCreneau) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -423,7 +423,7 @@ class Controller extends BaseController
         return redirect()->route('appointments.show');
     }
 
-    // Display of the appointments (history and upcoming) ==> Client account userType=2
+    // Displays logged in client's appointments (history and upcoming) ==> Client account userType=2
     public function showClientAppointments(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -434,8 +434,8 @@ class Controller extends BaseController
         return view('client_appointments', ['pastConsults' => $pastConsults, 'futureConsults' => $futureConsults]);
     }
 
-    // Display of the veterinary's schedule, appointments with clients, consultation motives, date and time...
-    // Veterinary account userType=1
+    // Displays logged in vet's schedule, appointments with clients, consultation motives, date and time...
+    // vet account userType=1
     public function showBookedSlotsList(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -446,8 +446,8 @@ class Controller extends BaseController
         return view('booked_slots', ['veto' => $veto, 'consultations' => $consultations]);
     }
 
-    // Display of the clients for the veterinary: list of the clients and their pets with info
-    // Veterinary account userType=1
+    // Displays logged in vet's clients : list of the clients and their pets with info
+    // vet account userType=1
     public function showClientsList(Request $request) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -479,7 +479,7 @@ class Controller extends BaseController
         return view('search_results', ['vetos' => $vets, 'creneaux' => $slots]);
     }
 
-    // Shows a list of results (veterinaries) when searching by name of the veterinary and animal category
+    // Shows a list of results (veterinaries) when searching by name of the vet and animal category
     public function searchByName(Request $request) {
         $rules = [
             'nom' => ['regex:/^[\p{L}-]+$/u'],
@@ -496,7 +496,7 @@ class Controller extends BaseController
         return view('search_results', ['vetos' => $vets, 'creneaux' => $slots]);
     }
 
-    // deleting an appointment
+    // deletes an appointment
     public function deleteAppointment(Request $request, int $IDConsult) {
         try {
             $this->repository->deleteAppointment($IDConsult);
@@ -508,8 +508,8 @@ class Controller extends BaseController
         return redirect()->back();
     }
 
-    // Display of the form to modify/update the consultation in the animal file
-    // Veterinary account userType=1
+    // Displays form to update an appointment in an animal file
+    // vet account userType=1
     public function showAppointmentUpdateForm(Request $request, int $IDClient, int $IDAnimal, int $IDConsult) {
         if (!($request->session()->has('user')))
             return redirect()->route('login.show');
@@ -521,7 +521,7 @@ class Controller extends BaseController
         return view('update_appointment', ['consult' => $consult]);
     }
 
-    // Saving the modifications of the consultations, added by the veterinary in the animal file, in the database
+    // Saves appointment's updates added by a vet in the animal file in the database
     public function storeAppointmentUpdate(Request $request, int $IDClient, int $IDAnimal, int $IDConsult) {
         $rules = [
             'motifConsult' => ['string', 'nullable'],

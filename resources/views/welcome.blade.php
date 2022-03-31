@@ -2,8 +2,7 @@
 
 
 @section('title')
-<div style="margin: 15px; font-family: Cabin, serif;"> Consultations pour Compagnons Instantanées </div>
-
+Consultations pour Compagnons Instantanées
 @endsection
 
 
