@@ -1458,12 +1458,7 @@ class Data
     function Consultations()
     {
         return [
-            [
-                'ObsConsult' => '',
-                'MotifConsult' => 'vaccination',
-                'IDAnimal' => '2',
-                'IDCreneau' => '1'
-            ],
+           
 
             [
                 'ObsConsult' => '',
