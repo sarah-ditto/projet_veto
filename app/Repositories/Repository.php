@@ -569,8 +569,6 @@ class Repository {
             ->where('Animaux.IDAnimal', $IDAnimal)
             ->orderBy('DateCreneau','desc')
             ->get()->toArray();
-            if (count($consult)==0)
-                throw new Exception('Consultation inconnue');
             return $consult;
         }
 
